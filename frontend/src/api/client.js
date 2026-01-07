@@ -307,27 +307,6 @@ export const api = {
 
 // 导出默认客户端
 export default apiClient
-    return client.get(`/tasks/${taskId}`)
-  },
-
-  // 更新任务
-  updateTask(taskId, taskData) {
-    return client.put(`/tasks/${taskId}`, taskData)
-  },
-
-  // 删除任务
-  deleteTask(taskId) {
-    return client.delete(`/tasks/${taskId}`)
-  },
-
-  // 获取监控指标
-  getMetrics() {
-    return client.get('/metrics')
-  },
-
-  // 获取日志
-  getLogs(filter = {}) {
-    return client.get('/logs', { params: filter })
   },
 
   // 获取 DAG 流水线
