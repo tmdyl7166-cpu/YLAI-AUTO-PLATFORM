@@ -33,7 +33,9 @@ services:
       retries: 3
       start_period: 30s
     
-    # 环境变量
+    # 环境变量（优先从 docker/.env 加载）
+    env_file:
+      - ./docker/.env
     environment:
       - ENV=production
       - API_HOST=0.0.0.0
@@ -233,6 +235,7 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
     
     ports:
       - "3000:3000"
