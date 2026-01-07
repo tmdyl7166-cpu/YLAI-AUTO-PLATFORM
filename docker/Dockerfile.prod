@@ -63,8 +63,13 @@ RUN mkdir -p /app/scripts
 COPY --chown=appuser:appuser docker/healthcheck.sh /app/scripts/healthcheck.sh
 RUN chmod +x /app/scripts/healthcheck.sh
 
-# 执行迁移和启动
-CMD ["sh", "-c", "python -m alembic upgrade head && uvicorn backend.app:app --host 0.0.0.0 --port 8001"]
+# Copy entrypoint and make executable
+COPY --chown=appuser:appuser backend/docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh
+
+# 执行迁移和启动通过 entrypoint
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
+CMD ["uvicorn", "backend.app:app", "--host", "0.0.0.0", "--port", "8001"]
 
 # 暴露端口
 EXPOSE 8001
