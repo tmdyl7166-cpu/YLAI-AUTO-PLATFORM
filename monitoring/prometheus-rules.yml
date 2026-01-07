@@ -1,0 +1,119 @@
+groups:
+  - name: ylai_backend_alerts
+    interval: 30s
+    rules:
+      # ==================== 应用可用性告警 ====================
+      - alert: BackendDown
+        expr: up{job="backend"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: backend
+        annotations:
+          summary: "后端服务不可用"
+          description: "后端服务已离线 {{ $value }} 分钟"
+      
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          service: backend
+        annotations:
+          summary: "HTTP 错误率过高"
+          description: "最近 5 分钟内 5xx 错误率 > 5% (当前值: {{ $value | humanizePercentage }})"
+      
+      # ==================== 性能告警 ====================
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1.0
+        for: 5m
+        labels:
+          severity: warning
+          service: backend
+        annotations:
+          summary: "API 响应时间过长"
+          description: "p95 响应时间 > 1s (当前值: {{ $value }}s)"
+      
+      - alert: HighCPUUsage
+        expr: (100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)) > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "CPU 使用率过高"
+          description: "{{ $labels.instance }} CPU 使用率 > 80% (当前值: {{ $value }}%)"
+      
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) < 0.2
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "内存可用率过低"
+          description: "{{ $labels.instance }} 可用内存 < 20% (当前值: {{ $value | humanizePercentage }})"
+      
+      # ==================== 存储告警 ====================
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.lowerfs|squashfs|vfat"} / node_filesystem_size_bytes) < 0.1
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "磁盘空间即将耗尽"
+          description: "{{ $labels.mountpoint }} 可用空间 < 10%"
+      
+      # ==================== 数据库告警 ====================
+      - alert: PostgreSQLDown
+        expr: up{job="postgres"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: database
+        annotations:
+          summary: "PostgreSQL 服务不可用"
+          description: "PostgreSQL 已离线"
+      
+      - alert: PostgreSQLHighConnections
+        expr: pg_stat_activity_count / pg_settings_max_connections > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "PostgreSQL 连接数过多"
+          description: "连接数占比 > 80%"
+      
+      # ==================== Redis 告警 ====================
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: cache
+        annotations:
+          summary: "Redis 服务不可用"
+          description: "Redis 已离线"
+      
+      - alert: RedisHighMemoryUsage
+        expr: (redis_memory_used_bytes / redis_memory_max_bytes) > 0.85
+        for: 5m
+        labels:
+          severity: warning
+          service: cache
+        annotations:
+          summary: "Redis 内存使用率过高"
+          description: "内存使用率 > 85%"
+      
+      # ==================== 容器告警 ====================
+      - alert: ContainerRestartingFrequently
+        expr: rate(container_last_seen[5m]) > 0.01
+        for: 5m
+        labels:
+          severity: warning
+          service: container
+        annotations:
+          summary: "容器频繁重启"
+          description: "容器 {{ $labels.container_name }} 在最近 5 分钟内重启频繁"

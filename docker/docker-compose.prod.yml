@@ -245,21 +245,124 @@ services:
     networks:
       - ylai-network
 
-  # ==================== 日志聚合 (可选) ====================
-  # loki:
-  #   image: grafana/loki:latest
-  #   container_name: ylai-loki
-  #   ports:
-  #     - "3100:3100"
-  #   restart: unless-stopped
-  #   networks:
-  #     - ylai-network
+  # ==================== 日志聚合 - Logstash ====================
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.0
+    container_name: ylai-logstash
+    
+    environment:
+      - PIPELINE_BATCH_SIZE=128
+      - PIPELINE_BATCH_DELAY=50
+      - LOG_LEVEL=info
+    
+    volumes:
+      - ./docker/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      - ./logs:/var/log/ylai:ro
+    
+    ports:
+      - "5000:5000/udp"
+      - "5000:5000/tcp"
+    
+    depends_on:
+      - elasticsearch
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9600"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    
+    restart: unless-stopped
+    
+    networks:
+      - ylai-network
+  
+  # ==================== Elasticsearch - 日志存储 ====================
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: ylai-elasticsearch
+    
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    
+    ports:
+      - "9200:9200"
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    
+    restart: unless-stopped
+    
+    networks:
+      - ylai-network
+  
+  # ==================== Kibana - 日志查询可视化 ====================
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: ylai-kibana
+    
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    
+    ports:
+      - "5601:5601"
+    
+    depends_on:
+      - elasticsearch
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5601/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    
+    restart: unless-stopped
+    
+    networks:
+      - ylai-network
+  
+  # ==================== AlertManager - Prometheus 告警 ====================
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: ylai-alertmanager
+    
+    volumes:
+      - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager-data:/alertmanager
+    
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+    
+    ports:
+      - "9093:9093"
+    
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9093/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    
+    restart: unless-stopped
+    
+    networks:
+      - ylai-network
 
 volumes:
   postgres-data:
   redis-data:
   prometheus-data:
   grafana-data:
+  elasticsearch-data:
+  alertmanager-data:
 
 networks:
   ylai-network:

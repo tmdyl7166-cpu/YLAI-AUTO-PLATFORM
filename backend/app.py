@@ -29,6 +29,15 @@ from backend.services.cache_service import cache_service
 from backend.services.database_service import db_service
 from backend.services.monitoring_service import monitoring_service
 
+# Import metrics and middleware
+try:
+    from backend.config.metrics import request_count, request_duration, active_connections, REGISTRY
+    from backend.config.middleware import MetricsMiddleware, RequestContextMiddleware
+except ImportError:
+    REGISTRY = None
+    MetricsMiddleware = None
+    RequestContextMiddleware = None
+
 try:
     from backend.ai_bridge import run_ai_task as _run_ai_task
 except Exception:
@@ -79,6 +88,13 @@ class ContentTypeFixMiddleware(BaseHTTPMiddleware):
         return response
 
 app.add_middleware(ContentTypeFixMiddleware)
+
+# Add Prometheus metrics middleware
+if MetricsMiddleware:
+    app.add_middleware(MetricsMiddleware)
+if RequestContextMiddleware:
+    app.add_middleware(RequestContextMiddleware)
+
 kernel = Kernel()
 kernel.load_scripts()
 app.state.kernel = kernel
@@ -145,17 +161,26 @@ def get_docs():
     content = doc_path.read_text(encoding="utf-8")
     return PlainTextResponse(content, media_type="text/markdown")
 
-# /api/monitor/metrics: 返回 Prometheus 监控指标
-@app.get("/api/monitor/metrics")
-def monitor_metrics():
-    """Prometheus 监控指标端点（/api/monitor/metrics）"""
+# /metrics: Standard Prometheus metrics endpoint
+@app.get("/metrics")
+def get_prometheus_metrics():
+    """Prometheus metrics endpoint (Prometheus scrape format)."""
+    if not REGISTRY:
+        return PlainTextResponse("Prometheus client not available", status_code=503)
     try:
+        from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
         return Response(
-            content=monitoring_service.get_metrics(),
+            content=generate_latest(REGISTRY),
             media_type=CONTENT_TYPE_LATEST
         )
     except Exception as e:
-        return PlainTextResponse(f"metrics error: {e}", status_code=500)
+        return PlainTextResponse(f"Error generating metrics: {e}", status_code=500)
+
+# /api/monitor/metrics: 返回 Prometheus 监控指标（legacy endpoint）
+@app.get("/api/monitor/metrics")
+def monitor_metrics():
+    """Prometheus 监控指标端点（/api/monitor/metrics）- Legacy endpoint, use /metrics instead."""
+    return get_prometheus_metrics()
 
 @app.get("/scripts")
 def list_scripts():

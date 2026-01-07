@@ -15,27 +15,53 @@ LOG_DIR = Path("./logs")
 LOG_DIR.mkdir(exist_ok=True)
 
 class JSONFormatter(logging.Formatter):
-    """JSON 格式日志输出器"""
+    """JSON 格式日志输出器 - ELK/Logstash 兼容"""
     
     def format(self, record: logging.LogRecord) -> str:
+        """Format log record as JSON for ELK/Logstash ingestion."""
         log_data = {
-            "timestamp": datetime.fromtimestamp(record.created).isoformat(),
+            "@timestamp": datetime.fromtimestamp(record.created).isoformat(),  # ELK 标准字段
             "level": record.levelname,
             "logger": record.name,
             "message": record.getMessage(),
             "module": record.module,
             "function": record.funcName,
             "line": record.lineno,
+            "process_id": record.process,
+            "thread_id": record.thread,
+            "thread_name": record.threadName,
         }
         
+        # 异常信息
         if record.exc_info:
-            log_data["exception"] = self.formatException(record.exc_info)
+            log_data["exception"] = {
+                "type": record.exc_info[0].__name__,
+                "message": str(record.exc_info[1]),
+                "traceback": self.formatException(record.exc_info),
+            }
         
+        # 请求上下文（如果存在）
         if hasattr(record, "user_id"):
             log_data["user_id"] = record.user_id
         
         if hasattr(record, "request_id"):
             log_data["request_id"] = record.request_id
+        
+        if hasattr(record, "endpoint"):
+            log_data["endpoint"] = record.endpoint
+        
+        if hasattr(record, "method"):
+            log_data["method"] = record.method
+        
+        if hasattr(record, "status_code"):
+            log_data["status_code"] = record.status_code
+        
+        if hasattr(record, "duration_ms"):
+            log_data["duration_ms"] = record.duration_ms
+        
+        # 性能指标
+        if record.name == "performance":
+            log_data["type"] = "performance"
         
         return json.dumps(log_data, ensure_ascii=False)
 
@@ -165,18 +191,23 @@ def log_performance(
     method: str,
     duration_ms: float,
     status_code: int,
+    request_id: Optional[str] = None,
 ) -> None:
-    """记录 API 性能指标"""
+    """记录 API 性能指标（Prometheus 友好）"""
     
     perf_logger = logging.getLogger("performance")
+    extra_data = {
+        "endpoint": endpoint,
+        "method": method,
+        "duration_ms": duration_ms,
+        "status_code": status_code,
+    }
+    if request_id:
+        extra_data["request_id"] = request_id
+    
     perf_logger.info(
-        "api_request",
-        extra={
-            "endpoint": endpoint,
-            "method": method,
-            "duration_ms": duration_ms,
-            "status_code": status_code,
-        }
+        f"{method} {endpoint} {status_code} {duration_ms:.2f}ms",
+        extra=extra_data
     )
 
 
@@ -192,6 +223,46 @@ def log_error_with_context(
         extra=context or {},
         exc_info=True,
     )
+
+
+# ==================== FastAPI 中间件集成 ====================
+
+def setup_logging_middleware(app):
+    """为 FastAPI 应用配置日志中间件"""
+    import time
+    from fastapi import Request
+    import uuid
+    
+    @app.middleware("http")
+    async def logging_middleware(request: Request, call_next):
+        request_id = str(uuid.uuid4())
+        start_time = time.time()
+        
+        # 添加 request_id 到请求状态
+        request.state.request_id = request_id
+        
+        response = await call_next(request)
+        
+        # 计算请求耗时
+        duration_ms = (time.time() - start_time) * 1000
+        
+        # 记录性能指标
+        logger = logging.getLogger()
+        logger.info(
+            f"{request.method} {request.url.path}",
+            extra={
+                "request_id": request_id,
+                "endpoint": request.url.path,
+                "method": request.method,
+                "status_code": response.status_code,
+                "duration_ms": duration_ms,
+            }
+        )
+        
+        response.headers["X-Request-ID"] = request_id
+        return response
+    
+    return app
 
 
 # ==================== 使用示例 ====================
@@ -211,5 +282,15 @@ if __name__ == "__main__":
         1 / 0
     except ZeroDivisionError:
         logger.exception("Exception occurred")
+    
+    # 性能日志示例
+    log_performance(
+        logger,
+        endpoint="/api/users",
+        method="GET",
+        duration_ms=125.5,
+        status_code=200,
+        request_id="req-12345"
+    )
     
     print("✓ 日志系统已初始化")

@@ -1,0 +1,70 @@
+# AlertManager 全局配置
+global:
+  resolve_timeout: 5m
+  slack_api_url: '${SLACK_WEBHOOK_URL}'  # 从环境变量读取
+  pagerduty_url: 'https://events.pagerduty.com/v2/enqueue'
+
+# 告警路由
+route:
+  receiver: 'default'
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 12h
+  
+  # 子路由：关键告警立即通知
+  routes:
+    - match:
+        severity: critical
+      receiver: 'pagerduty'
+      group_wait: 5s
+      repeat_interval: 1h
+    
+    - match:
+        severity: warning
+      receiver: 'slack'
+      group_wait: 10s
+      repeat_interval: 4h
+
+# 接收者配置
+receivers:
+  # 默认接收者：发送到 Slack
+  - name: 'default'
+    slack_configs:
+      - channel: '#alerts'
+        title: 'YLAI-AUTO 告警'
+        text: '{{ range .Alerts }}{{ .Annotations.summary }}\n{{ end }}'
+        send_resolved: true
+        color: '{{ if eq .Status "firing" }}danger{{ else }}good{{ end }}'
+  
+  # Slack 接收者：警告级别
+  - name: 'slack'
+    slack_configs:
+      - channel: '#alerts-warnings'
+        title: '⚠️ YLAI-AUTO 警告'
+        text: '{{ range .Alerts }}{{ .Annotations.summary }}\n{{ end }}'
+        send_resolved: true
+        color: 'warning'
+  
+  # PagerDuty 接收者：关键告警
+  - name: 'pagerduty'
+    pagerduty_configs:
+      - service_key: '${PAGERDUTY_SERVICE_KEY}'
+        description: '{{ .GroupLabels.alertname }}'
+
+# 告警抑制规则
+inhibit_rules:
+  # 如果主机宕机，抑制所有关于该主机的告警
+  - source_match:
+      severity: 'critical'
+      alertname: 'HostDown'
+    target_match_re:
+      alertname: '.*'
+    equal: ['instance']
+  
+  # 如果应用已重启，抑制重启告警
+  - source_match:
+      alertname: 'AppRestarted'
+    target_match:
+      alertname: 'AppDown'
+    equal: ['service']
