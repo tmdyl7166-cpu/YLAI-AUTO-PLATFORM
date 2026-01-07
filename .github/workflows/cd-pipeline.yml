@@ -93,6 +93,13 @@ jobs:
           pip install -r backend/requirements.txt
           pip install pytest pytest-cov pytest-asyncio
       
+      - name: Alembic migrations dry-run (render SQL only)
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test_db
+        run: |
+          pip install alembic
+          python tools/alembic_ci_check.py
+
       - name: Run tests with coverage
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test_db
