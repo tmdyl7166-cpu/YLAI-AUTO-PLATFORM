@@ -75,12 +75,14 @@ testpaths = ["backend/tests", "backend/test_smoke.py"]
 python_files = "test_*.py"
 python_classes = "Test*"
 python_functions = "test_*"
-addopts = "--strict-markers --tb=short"
+addopts = "--strict-markers --tb=short -v --cov=backend --cov-report=term-missing --cov-report=html --cov-fail-under=50"
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests as integration tests",
     "smoke: marks tests as smoke tests",
+    "unit: marks tests as unit tests",
 ]
+asyncio_mode = "auto"
 
 [tool.mypy]
 python_version = "3.11"
@@ -92,7 +94,10 @@ disallow_incomplete_defs = false
 
 [tool.coverage.run]
 source = ["backend"]
-omit = ["*/tests/*", "*/test_*.py"]
+omit = ["*/tests/*", "*/test_*.py", "*/__pycache__/*", "*/migrations/*"]
+branch = true
+concurrency = ["multiprocessing"]
+parallel = true
 
 [tool.coverage.report]
 exclude_lines = [
@@ -103,6 +108,20 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
     "if typing.TYPE_CHECKING:",
+    "except ImportError:",
+    "if sys.platform",
+]
+precision = 2
+show_missing = true
+skip_covered = false
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+[tool.coverage.paths]
+source = [
+    "backend",
+    ".tox/*/lib/python*/site-packages/backend",
 ]
 
 [project.urls]
