@@ -12,6 +12,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  PROM_VERSION: '2.45.0'
 
 jobs:
   # ==================== 代码质量检查 ====================
@@ -310,6 +311,19 @@ jobs:
           
           ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST \
             "cd /app && git pull && docker-compose up -d"
+
+      - name: Wait for Grafana and import dashboards (staging)
+        if: ${{ secrets.GRAFANA_API_KEY != '' }}
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+          DEPLOY_HOST: staging.ylai.local
+          DEPLOY_USER: deploy
+          GRAFANA_API_KEY: ${{ secrets.GRAFANA_API_KEY }}
+        run: |
+          echo "Waiting for Grafana on remote and importing dashboards..."
+          ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST \
+            "for i in {1..30}; do curl -sfS http://localhost:3000/api/health && break || sleep 5; done && \
+             export GRAFANA_API_KEY='${GRAFANA_API_KEY}' && cd /app && bash scripts/import_grafana_dashboard.sh || true"
       
       - name: Health check
         run: |
@@ -362,6 +376,19 @@ jobs:
              docker-compose -f docker/docker-compose.prod.yml pull && \
              docker-compose -f docker/docker-compose.prod.yml up -d && \
              docker-compose -f docker/docker-compose.prod.yml ps"
+
+      - name: Wait for Grafana and import dashboards (production)
+        if: ${{ secrets.GRAFANA_API_KEY != '' }}
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+          DEPLOY_HOST: prod.ylai.local
+          DEPLOY_USER: deploy
+          GRAFANA_API_KEY: ${{ secrets.GRAFANA_API_KEY }}
+        run: |
+          echo "Waiting for Grafana on remote and importing dashboards..."
+          ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST \
+            "for i in {1..30}; do curl -sfS http://localhost:3000/api/health && break || sleep 5; done && \
+             export GRAFANA_API_KEY='${GRAFANA_API_KEY}' && cd /app && bash scripts/import_grafana_dashboard.sh || true"
       
       - name: Smoke tests
         run: |
