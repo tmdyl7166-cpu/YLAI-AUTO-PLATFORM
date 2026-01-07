@@ -1,6 +1,12 @@
 name: CI/CD Pipeline
 
 on:
+  workflow_dispatch:
+    inputs:
+      PROM_VERSION:
+        description: 'Prometheus promtool version to use (optional)'
+        required: false
+        default: '2.45.0'
   push:
     branches: [main, develop]
     tags: ['v*']
@@ -209,14 +215,13 @@ jobs:
 
       - name: Download promtool
         run: |
-          PROM_VERSION=${{ env.PROM_VERSION || '2.45.0' }}
+          PROM_VERSION="${{ github.event.inputs.PROM_VERSION || env.PROM_VERSION }}"
           ARCH=linux-amd64
           URL="https://github.com/prometheus/prometheus/releases/download/v${PROM_VERSION}/prometheus-${PROM_VERSION}.${ARCH}.tar.gz"
           echo "Downloading promtool from $URL"
           curl -sL "$URL" -o /tmp/prom.tar.gz
           tar -xzf /tmp/prom.tar.gz -C /tmp
-          ls /tmp/prometheus-${{ env.PROM_VERSION || '2.45.0' }}.${ARCH}
-          sudo mv /tmp/prometheus-${{ env.PROM_VERSION || '2.45.0' }}.${ARCH}/promtool /usr/local/bin/
+          sudo mv /tmp/prometheus-${PROM_VERSION}.${ARCH}/promtool /usr/local/bin/
 
       - name: Validate Prometheus rules and config
         run: |
@@ -321,9 +326,30 @@ jobs:
           GRAFANA_API_KEY: ${{ secrets.GRAFANA_API_KEY }}
         run: |
           echo "Waiting for Grafana on remote and importing dashboards..."
+          LOGFILE=./grafana_import_staging.log
+          rm -f $LOGFILE
           ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST \
-            "for i in {1..30}; do curl -sfS http://localhost:3000/api/health && break || sleep 5; done && \
-             export GRAFANA_API_KEY='${GRAFANA_API_KEY}' && cd /app && bash scripts/import_grafana_dashboard.sh || true"
+            "export GRAFANA_API_KEY='${GRAFANA_API_KEY}'; \
+             for i in {1..30}; do curl -sfS http://localhost:3000/api/health && break || sleep 5; done; \
+             echo 'Starting dashboard import using docker-run curl image'; \
+             for f in /app/monitoring/grafana/dashboards/*.json; do \
+               [ -e \"$f\" ] || continue; \
+               name=\"$(basename \"$f\")\"; \
+               attempts=0; success=0; \
+               while [ $attempts -lt 3 ]; do \
+                 attempts=$((attempts+1)); \
+                 echo "Importing $name (attempt $attempts)"; \
+                 docker run --rm -v /app/monitoring/grafana/dashboards:/dashboards --link ylai-grafana:grafana curlimages/curl:7.90.0 -sS -X POST http://grafana:3000/api/dashboards/db -H \"Authorization: Bearer $GRAFANA_API_KEY\" -H \"Content-Type: application/json\" --data-binary @/dashboards/$name && { success=1; break; } || sleep 5; \
+               done; \
+               if [ $success -eq 0 ]; then echo "FAILED to import $name"; fi; \
+             done"
+
+      - name: Upload Grafana import log (staging)
+        if: ${{ secrets.GRAFANA_API_KEY != '' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: grafana-import-staging
+          path: ./grafana_import_staging.log
       
       - name: Health check
         run: |
@@ -386,9 +412,30 @@ jobs:
           GRAFANA_API_KEY: ${{ secrets.GRAFANA_API_KEY }}
         run: |
           echo "Waiting for Grafana on remote and importing dashboards..."
+          LOGFILE=./grafana_import_production.log
+          rm -f $LOGFILE
           ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST \
-            "for i in {1..30}; do curl -sfS http://localhost:3000/api/health && break || sleep 5; done && \
-             export GRAFANA_API_KEY='${GRAFANA_API_KEY}' && cd /app && bash scripts/import_grafana_dashboard.sh || true"
+            "export GRAFANA_API_KEY='${GRAFANA_API_KEY}'; \
+             for i in {1..30}; do curl -sfS http://localhost:3000/api/health && break || sleep 5; done; \
+             echo 'Starting dashboard import using docker-run curl image'; \
+             for f in /app/monitoring/grafana/dashboards/*.json; do \
+               [ -e \"$f\" ] || continue; \
+               name=\"$(basename \"$f\")\"; \
+               attempts=0; success=0; \
+               while [ $attempts -lt 3 ]; do \
+                 attempts=$((attempts+1)); \
+                 echo "Importing $name (attempt $attempts)"; \
+                 docker run --rm -v /app/monitoring/grafana/dashboards:/dashboards --link ylai-grafana:grafana curlimages/curl:7.90.0 -sS -X POST http://grafana:3000/api/dashboards/db -H \"Authorization: Bearer $GRAFANA_API_KEY\" -H \"Content-Type: application/json\" --data-binary @/dashboards/$name && { success=1; break; } || sleep 5; \
+               done; \
+               if [ $success -eq 0 ]; then echo "FAILED to import $name"; fi; \
+             done"
+
+      - name: Upload Grafana import log (production)
+        if: ${{ secrets.GRAFANA_API_KEY != '' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: grafana-import-production
+          path: ./grafana_import_production.log
       
       - name: Smoke tests
         run: |
