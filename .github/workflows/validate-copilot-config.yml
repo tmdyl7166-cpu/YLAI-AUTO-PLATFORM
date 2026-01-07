@@ -51,7 +51,7 @@ jobs:
           def parse_list(m):
             if not m:
               return []
-            items = [i.strip().strip('`"\'"'') for i in m.group(1).split(',') if i.strip()]
+            items = [i.strip().strip("`\"'") for i in m.group(1).split(',') if i.strip()]
             return items
 
           include_match = re.search(r'"include"\s*:\s*\[(.*?)\]', gitc, re.S)
