@@ -6,6 +6,8 @@ YLAI-AUTO-PLATFORM 生产级日志配置
 import logging
 import logging.handlers
 import json
+import os
+import random
 from pathlib import Path
 from typing import Optional
 from datetime import datetime
@@ -70,6 +72,7 @@ def setup_logging(
     level: str = "INFO",
     log_format: str = "json",
     environment: str = "development",
+    sample_rate: Optional[float] = None,
 ) -> logging.Logger:
     """
     配置应用日志系统
@@ -104,6 +107,16 @@ def setup_logging(
         console_formatter = logging.Formatter(fmt)
     
     console_handler.setFormatter(console_formatter)
+    # 应用采样过滤器到控制台与文件处理器
+    sampling_rate = sample_rate
+    if sampling_rate is None:
+        try:
+            sampling_rate = float(os.getenv("LOG_SAMPLE_RATE", "1.0"))
+        except Exception:
+            sampling_rate = 1.0
+
+    sampler = SamplingFilter(rate=sampling_rate)
+    console_handler.addFilter(sampler)
     root_logger.addHandler(console_handler)
     
     # ==================== 文件处理器 - 一般日志 ====================
@@ -120,6 +133,7 @@ def setup_logging(
     file_handler.setFormatter(
         JSONFormatter() if log_format == "json" else console_formatter
     )
+    file_handler.addFilter(sampler)
     root_logger.addHandler(file_handler)
     
     # ==================== 文件处理器 - 错误日志 ====================
@@ -133,6 +147,7 @@ def setup_logging(
     error_handler.setFormatter(
         JSONFormatter() if log_format == "json" else console_formatter
     )
+    # 错误日志不过滤
     root_logger.addHandler(error_handler)
     
     # ==================== 文件处理器 - 性能日志 ====================
@@ -147,12 +162,39 @@ def setup_logging(
         perf_handler.setFormatter(JSONFormatter())
         
         perf_logger = logging.getLogger("performance")
+        # 性能日志可选不采样，默认: 保留全部性能记录
         perf_logger.addHandler(perf_handler)
     
     return root_logger
 
 
 # ==================== 日志过滤器 ====================
+
+class SamplingFilter(logging.Filter):
+    """基于采样率的日志过滤器，减少高频低价值日志写入。
+
+    依赖环境变量 `LOG_SAMPLE_RATE`（float 0.0 - 1.0），或者通过构造函数传入 `rate`。
+    当 rate 为 1.0 时不进行采样，0.0 时会丢弃所有被采样的日志。
+    """
+    def __init__(self, rate: Optional[float] = None):
+        super().__init__()
+        if rate is None:
+            try:
+                rate = float(os.getenv("LOG_SAMPLE_RATE", "1.0"))
+            except Exception:
+                rate = 1.0
+        self.rate = max(0.0, min(1.0, float(rate)))
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        # 总是保留 ERROR 及以上级别
+        if record.levelno >= logging.ERROR:
+            return True
+        # 若采样率为 1，则保留所有
+        if self.rate >= 1.0:
+            return True
+        # 随机采样
+        return random.random() < self.rate
+
 
 class RequestContextFilter(logging.Filter):
     """添加请求上下文信息到日志"""
