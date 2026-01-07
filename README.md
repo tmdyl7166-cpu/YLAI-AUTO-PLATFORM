@@ -44,6 +44,125 @@ git clone <repository-url>
 ./start.sh frontend   # 启动前端 (端口3001)
 ```
 
+## 本地域名访问与统一代理（已配置）
+
+### 当前部署状态 ✅
+
+项目已完成前后端统一配置，支持通过本地域名 `ylai.local` 访问完整应用栈：
+
+| 组件 | 监听地址 | 状态 | 说明 |
+|------|--------|------|------|
+| 后端 (FastAPI) | `127.0.0.1:8001` | ✅ 运行中 | uvicorn 异步 Web 服务器 |
+| 前端 (Vue3) | `frontend/dist` | ✅ 生产构建完成 | 已禁用 PWA 以避免工作流配置冲突 |
+| 本地 nginx 代理 | `127.0.0.1:80` / `ylai.local` | ✅ Docker 容器运行 | 反向代理 + 静态文件服务 + SPA 回退 |
+| 宿主机 hosts | `/etc/hosts` | ✅ 已配置 | `127.0.0.1 ylai.local` |
+
+### 快速启动指南
+
+#### 前置环境
+- Docker & Docker Compose（用于本地代理 nginx）
+- Python 3.12+ 与 venv（后端依赖管理）
+- Node.js 24+（前端构建）
+
+#### 启动步骤
+
+**1️⃣ 启动后端**
+```bash
+cd /workspaces/YLAI-AUTO-PLATFORM
+source .venv/bin/activate
+export PYTHONPATH="/workspaces/YLAI-AUTO-PLATFORM:${PYTHONPATH:-}"
+uvicorn backend.app:app --host 127.0.0.1 --port 8001 --log-level info &
+```
+
+**2️⃣ 启动本地 nginx 代理**
+```bash
+# 确保前端 dist 已构建（已在库中）
+docker compose -f docker/docker-compose.local.yml up -d
+```
+
+**3️⃣ 验证访问**
+```bash
+# 检查 hosts 映射
+getent hosts ylai.local
+
+# 测试前端
+curl -sS http://ylai.local/ | grep -o '<title>.*</title>'
+
+# 测试后端 API
+curl -sS http://ylai.local/api/health | jq '.message'
+```
+
+### 访问入口
+
+| 路径 | 用途 | 访问地址 |
+|------|------|----------|
+| 首页 | 功能集合主页 | http://ylai.local/ |
+| 任务执行 | 运行爬虫/自动化任务 | http://ylai.local/run |
+| 监控面板 | 系统健康与日志 | http://ylai.local/monitor |
+| API 文档 | Swagger UI | http://ylai.local/api/docs 或 http://127.0.0.1:8001/docs |
+| 可视化编排 | DAG 流水线编排 | http://ylai.local/visual-pipeline |
+| 权限管理 | RBAC 配置 | http://ylai.local/rbac |
+
+### 开发模式（热更新）
+
+需要实时前端代码修改时，启动 Vite 开发服务器：
+
+```bash
+cd frontend
+npm run dev -- --port 5173
+```
+
+然后在浏览器访问 http://localhost:5173/ 或通过修改 nginx 配置代理至 5173 后访问 http://ylai.local/。
+
+### 配置说明
+
+**nginx 代理流程**（`docker/local-nginx.conf`）：
+- `location = /health` → 代理到 `http://127.0.0.1:8001/health`（后端健康检查）
+- `location /api/` → 代理到 `http://127.0.0.1:8001/`（后端 API）
+- `location /ws/` → WebSocket 代理到 `http://127.0.0.1:8001/`（实时通信）
+- `location /` → 从 `/usr/share/nginx/html`（前端 dist）服务，失败时回退到 `index.html`（SPA 支持）
+
+**前端配置**（`frontend/vite.config.js`）：
+- 默认端口：`5173`（可通过 `VITE_PORT` 环境变量覆盖）
+- 开发代理：`/api` → `http://127.0.0.1:8001/`，`/ws` → `ws://127.0.0.1:8001/`
+- 生产构建：输出至 `frontend/dist/`，由 nginx 直接服务
+
+**Docker Compose**（`docker/docker-compose.local.yml`）：
+- 挂载：`docker/local-nginx.conf` → `/etc/nginx/conf.d/default.conf`（只读）
+- 挂载：`frontend/dist/` → `/usr/share/nginx/html/`（只读）
+- 网络模式：`host`（Linux 下支持；其他系统可改为 bridge + 显式端口映射）
+
+### 故障排查
+
+| 问题 | 排查步骤 | 解决方案 |
+|------|--------|----------|
+| `ylai.local` 无法解析 | `getent hosts ylai.local` | 检查 `/etc/hosts` 是否包含 `127.0.0.1 ylai.local`；macOS 运行 `sudo dscacheutil -flushcache` |
+| 502 Bad Gateway | `curl -sS http://127.0.0.1:8001/health` | 确认后端进程运行中；查看 docker 日志 `docker logs ylai-local-nginx` |
+| 前端资源 404 | 检查 `frontend/dist` 文件是否存在 | 运行 `cd frontend && npm run build` 重新构建 |
+| nginx 无法启动 | `docker compose logs ylai-local-nginx` | 检查配置文件语法或端口冲突 |
+
+### 跨平台支持
+
+如果使用的 Docker 不支持 `network_mode: host`（如 macOS/Windows Docker Desktop），修改 `docker-compose.local.yml`：
+
+```yaml
+services:
+  nginx-local:
+    # ...
+    network_mode: bridge  # 改用 bridge
+    ports:
+      - "80:80"  # 显式端口映射
+    environment:
+      - BACKEND_HOST=host.docker.internal  # 宿主机代理地址
+```
+
+同时更新 `docker/local-nginx.conf`：
+
+```nginx
+proxy_pass http://$BACKEND_HOST:8001;  # 使用环境变量替代硬编码 127.0.0.1
+```
+
+
 ### Docker 部署
 
 ```bash
