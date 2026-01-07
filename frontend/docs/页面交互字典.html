@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>页面交互字典</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";background:#0b1220;color:#e2e8f0;padding:16px}
+h1{margin:0 0 12px}
+table{width:100%;border-collapse:collapse;background:#0a0f1e}
+th,td{border:1px solid rgba(29,240,255,0.25);padding:8px;text-align:left}
+th{background:#0d1426;color:#93c5fd}
+code{background:#0d1426;color:#93c5fd;padding:2px 6px;border-radius:4px}
+.small{font-size:12px;color:#93c5fd}
+section{margin-bottom:16px}
+</style>
+</head>
+<body>
+<h1>页面交互字典</h1>
+<p class="small">统一代理：所有接口与 WS 连接通过开发服务器代理到后端（默认 127.0.0.1:8001）。统一鉴权：按需附加 `auth.js` 的鉴权头。</p>
+<section>
+<h2>Index 首页</h2>
+<table>
+<thead><tr><th>页面</th><th>动作/元素</th><th>方法</th><th>接口</th><th>入参示例</th><th>响应渲染</th></tr></thead>
+<tbody>
+<tr><td>index</td><td>参数部署：校验</td><td>POST</td><td><code>/api/config/validate</code></td><td><code>{}</code></td><td><code>#p-result</code></td></tr>
+<tr><td>index</td><td>参数部署：保存</td><td>POST</td><td><code>/api/config/save</code></td><td><code>{}</code></td><td><code>#p-result</code></td></tr>
+<tr><td>index</td><td>智能调度：启动</td><td>POST</td><td><code>/api/scheduler/start</code></td><td><code>{}</code></td><td><code>#s-result</code></td></tr>
+<tr><td>index</td><td>采集任务：列表</td><td>GET</td><td><code>/api/collect/tasks</code></td><td>—</td><td><code>#c-result</code></td></tr>
+<tr><td>index</td><td>枚举任务：触发</td><td>POST</td><td><code>/api/enum/tasks/scan</code></td><td><code>{}</code></td><td><code>#e-result</code></td></tr>
+<tr><td>index</td><td>识别任务：提交</td><td>POST</td><td><code>/api/recognize/tasks/create</code></td><td><code>{}</code></td><td><code>#r-result</code></td></tr>
+<tr><td>index</td><td>破解任务：启动</td><td>POST</td><td><code>/api/crack/start</code></td><td><code>{}</code></td><td><code>#k-result</code></td></tr>
+</tbody>
+</table>
+</section>
+<section>
+<h2>Modules 快捷操作</h2>
+<table>
+<thead><tr><th>页面</th><th>动作/元素</th><th>方法</th><th>接口</th><th>入参示例</th><th>响应渲染</th></tr></thead>
+<tbody>
+<tr><td>index/monitor/run</td><td>运行（data-act=run）</td><td>GET</td><td><code>pages/run.html?script={name}</code></td><td>—</td><td>页面跳转</td></tr>
+<tr><td>index/monitor/run</td><td>状态（data-act=status）</td><td>GET</td><td><code>/api/status</code></td><td>—</td><td>alert/弹窗</td></tr>
+<tr><td>index/monitor/run</td><td>CURL（data-act=curl）</td><td>GET</td><td><code>/api/{name}</code></td><td>—</td><td>alert/弹窗</td></tr>
+</tbody>
+</table>
+</section>
+<section>
+<h2>Run 运行大屏</h2>
+<table>
+<thead><tr><th>页面</th><th>动作/元素</th><th>方法</th><th>接口</th><th>入参示例</th><th>响应渲染</th></tr></thead>
+<tbody>
+<tr><td>run</td><td>运行脚本（#runBtn）</td><td>POST</td><td><code>/run</code> 或 <code>/api/run</code></td><td><code>{"name":"demo","params":{}}</code></td><td><code>#runResult</code></td></tr>
+<tr><td>run</td><td>AI 联动（#ai-run-btn）</td><td>POST</td><td><code>/api/ai/pipeline</code></td><td><code>{"prompt":"中文任务"}</code></td><td><code>#ai-result</code></td></tr>
+<tr><td>run</td><td>AI 优化（#aiOptimizeSubmit）</td><td>POST</td><td><code>/api/ai/optimize</code></td><td><code>{"text":"错误日志"}</code></td><td><code>#aiOptimizeResult</code></td></tr>
+<tr><td>run</td><td>健康轮询</td><td>GET</td><td><code>/health</code></td><td>—</td><td><code>#ghi-dot/#ghi-text</code></td></tr>
+<tr><td>run</td><td>脚本清单</td><td>GET</td><td><code>/scripts</code></td><td>—</td><td><code>#scriptSelect</code></td></tr>
+<tr><td>run</td><td>URL 触发</td><td>POST</td><td><code>/api/run</code> 或 <code>/api/pipeline/run</code></td><td><code>?script=xxx&param={}</code></td><td><code>#run-result/#ai-result</code></td></tr>
+</tbody>
+</table>
+</section>
+<section>
+<h2>Monitor 监控页</h2>
+<table>
+<thead><tr><th>页面</th><th>动作/元素</th><th>方法</th><th>接口</th><th>入参示例</th><th>响应渲染</th></tr></thead>
+<tbody>
+<tr><td>monitor</td><td>模块卡片 run/status/curl</td><td>GET/POST</td><td><code>/api/status</code>、<code>/api/{name}</code></td><td>—</td><td><code>#monitor-modules/#monitor-status</code></td></tr>
+<tr><td>monitor</td><td>日志订阅</td><td>SSE</td><td><code>/api/sse/logs</code></td><td><code>?token=...</code></td><td><code>#logBox</code></td></tr>
+<tr><td>monitor</td><td>占位接口</td><td>GET</td><td><code>/api/placeholder/{key}</code></td><td>—</td><td><code>#monitor-ph</code></td></tr>
+<tr><td>monitor</td><td>电路状态</td><td>GET</td><td><code>/api/scheduler/circuit</code></td><td>—</td><td><code>#circuit-state</code></td></tr>
+<tr><td>monitor</td><td>策略等级</td><td>GET</td><td><code>/api/policy/get</code></td><td>—</td><td><code>#policy-level</code></td></tr>
+<tr><td>monitor</td><td>统一启动</td><td>POST</td><td><code>/api/dashboard/launch</code></td><td><code>{"feature":"collect","script":"spider","params":{}}</code></td><td>追加到日志区</td></tr>
+</tbody>
+</table>
+</section>
+<section>
+<h2>API 文档页</h2>
+<table>
+<thead><tr><th>页面</th><th>动作/元素</th><th>方法</th><th>接口</th><th>入参示例</th><th>响应渲染</th></tr></thead>
+<tbody>
+<tr><td>api-doc</td><td>健康/脚本/权限/电路</td><td>GET</td><td><code>/health</code>、<code>/scripts</code>、<code>/api/security/rbac</code>、<code>/api/scheduler/circuit</code></td><td>—</td><td><code>#out-health/#out-scripts/#out-rbac/#out-circuit</code></td></tr>
+<tr><td>api-doc</td><td>占位接口演练</td><td>GET</td><td><code>/api/placeholder/{key}</code></td><td>—</td><td><code>#ap-ph-out</code></td></tr>
+<tr><td>api-doc</td><td>接口测试面板</td><td>GET/POST</td><td><code>/{path}</code></td><td>JSON 体（POST）</td><td><code>#ap-test-result</code></td></tr>
+</tbody>
+</table>
+</section>
+<section>
+<h2>AI 推理页</h2>
+<table>
+<thead><tr><th>页面</th><th>动作/元素</th><th>方法</th><th>接口</th><th>入参示例</th><th>响应渲染</th></tr></thead>
+<tbody>
+<tr><td>ai-demo</td><td>模型推理</td><td>POST</td><td><code>/api/generate</code></td><td><code>{"model":"deepseek-r1-8b","prompt":"..."}</code></td><td><code>#result</code></td></tr>
+</tbody>
+</table>
+</section>
+<section>
+<h2>统一行为</h2>
+<ul>
+<li>事件联动：调用发布到 `UIBus` 与 `modules:invoke`，可选上报 `WS /ws/logs`。</li>
+<li>组件渲染：图表/进度/提示由 `static/js/components/*` 提供。</li>
+<li>错误反馈：统一 toast/console，关键内容写入 `<pre>` 便于复制。</li>
+</ul>
+</section>
+</body>
+</html>

@@ -1,0 +1,710 @@
+{
+  "metadata": {
+    "name": "GitHub Copilot Programming Language Configuration",
+    "version": "1.0.0",
+      "schemaVersion": "1.0.0",
+    "type": "copilot-config",
+    "description": "动态项目识别和代码生成配置，可独立部署到任何项目目录",
+    "author": "AI System",
+    "created": "2025-12-13",
+    "portable": true,
+    "selfDiscovery": true
+  },
+
+  "configurationResolution": {
+    "absoluteRuleDocument": "gitc.md",
+    "absoluteRuleScope": "entire_project",
+    "absoluteNotes": "`gitc.md` 文档为项目绝对规则描述文档，优先级最高，始终生效。",
+    "projectIdentificationPrimary": {
+      "file": "gitc.md",
+      "location": "<root>",
+      "role": "项目绝对规则描述文档（Absolute Project Rules Document）",
+      "behavior": {
+        "ifMissing": "auto_create",
+        "template": "standard_gitc_template"
+      }
+    },
+    "externalRulesSupport": {
+      "enabled": true,
+      "configField": "external_rules_file",
+      "searchLocation": "gitc.md",
+      "description": "支持在 gitc.md 中配置外部 .json 规则文件路径，该文件作为项目绝对规则",
+      "strictValidation": {
+        "enabled": true,
+        "locationRule": "must_be_sibling_of_github_folder",
+        "namingRule": "must_start_with_YL_case_insensitive",
+        "allowedPrefixes": ["YL", "yl", "Yl", "yL"],
+        "failureAction": "fallback_to_internal_absolute"
+      }
+    },
+    "priorityOrder": [
+      "gitc.md 中指定的 external_rules_file (如存在)",
+      "gitc.md 文档本身的描述内容",
+      ".github/.copilot-config.json (作为默认规则库)"
+    ],
+    "decisionLogic": {
+      "externalRulesFirst": "当 gitc.md 中配置了 external_rules_file、文件名以 YL 开头、文件与 .github 同级且存在时，该文件作为项目绝对规则",
+      "strictValidation": "外部规则文件必须满足：1) 文件名以 YL/yl 开头；2) 与 .github/ 目录处于同一层级；3) JSON 格式有效。若任一条件不满足，则回退使用 .github/.copilot-config.json 作为绝对规则",
+      "fallbackOnFailure": "任何外部规则校验失败或缺失时，统一回退到 .github/.copilot-config.json 作为绝对规则，并记录错误码",
+      "gitcDocumentSecond": "当未配置外部规则且不触发严格校验时，gitc.md 文档描述的内容作为项目规则指引",
+      "internalRulesAsAbsolute": ".github/.copilot-config.json 在回退场景下提升为绝对规则，确保稳定与一致"
+    },
+    "notes": "项目规则由 gitc.md 决定：可指向外部 .json 文件，或使用 gitc.md 自身描述；.github/.copilot-config.json 为内置规则库。"
+  },
+  "projectPrimaryIdentification": {
+    "file": "gitc.md",
+    "location": "<root>",
+    "role": "项目绝对规则描述文档（Absolute Project Rules Document），用于定义项目的所有 Copilot 行为规范",
+    "behavior": {
+      "ifMissing": "auto_create",
+      "template": "standard_gitc_template"
+    },
+    "scope": {
+      "include": "整个项目（包括 .github/ 目录）",
+      "note": "gitc.md 是项目的最高优先级规则文档"
+    },
+    "externalRulesConfiguration": {
+      "field": "external_rules_file",
+      "description": "可在 gitc.md 中配置外部 .json 规则文件路径",
+      "priority": "highest",
+      "fallback": "未配置或文件不存在时，使用 gitc.md 文档描述 + 内置规则"
+    }
+  },
+  "placeholders": {
+    "description": "本配置文件作为默认规则库，提供基础语言定义和扫描策略。实际项目规则由 gitc.md 决定。",
+    "externalRulesSupport": {
+      "external_rules_file": "",
+      "usage": "在 gitc.md 中填写项目根目录下以 YL 开头的 .json 配置文件名",
+      "validExamples": ["YL-copilot-rules.json", "yl_project_config.json", "YLconfig.json"],
+      "invalidExamples": ["my-rules.json (未以YL开头)", "config/YL-rules.json (不在根目录)", ".github/YL.json (在.github内)"],
+      "strictRules": {
+        "location": "必须与 .github/ 目录处于同一层级（项目根目录）",
+        "naming": "文件名必须以 YL 或 yl 开头（大小写不敏感）",
+        "format": "必须是有效的 JSON 格式"
+      },
+      "priority": "如配置且满足严格规则，该文件作为项目绝对规则；不满足则记录错误并回退到 .github/.copilot-config.json 作为绝对规则"
+    }
+  },
+  "resolutionExamples": {
+    "external_rules_file": {
+      "rule": "gitc.md 中可配置 external_rules_file 指向外部 .json 规则文件，必须满足命名和位置要求",
+      "example_1": {
+        "gitc.md_config": {"external_rules_file": "YL-copilot-rules.json"},
+        "validation": "检查文件名是否以 YL 开头 → 检查是否与 .github 同级 → 检查文件是否存在 → 检查 JSON 语法",
+        "behavior": "验证通过后，加载 YL-copilot-rules.json 作为项目绝对规则",
+        "failure": "任一验证失败则记录错误并回退到 .github/.copilot-config.json 作为绝对规则"
+      },
+      "example_2": {
+        "gitc.md_config": {"external_rules_file": ""},
+        "behavior": "未配置外部规则，使用 gitc.md 文档描述 + 内置规则"
+      },
+      "example_3_invalid": {
+        "gitc.md_config": {"external_rules_file": "my-rules.json"},
+        "error": "E004 - 文件名必须以 YL 开头",
+        "behavior": "记录错误，回退到 .github/.copilot-config.json 作为绝对规则"
+      },
+      "example_4_invalid": {
+        "gitc.md_config": {"external_rules_file": "config/YL-rules.json"},
+        "error": "E005 - 文件必须与 .github 处于同一层级",
+        "behavior": "记录错误，回退到 .github/.copilot-config.json 作为绝对规则"
+      }
+    },
+    "default_behavior": {
+      "rule": "gitc.md 文档描述的内容作为项目规范指南",
+      "note": ".github/.copilot-config.json 提供语言定义、扫描策略等基础实现"
+    }
+  },
+
+  "communication": {
+    "languagePreference": "zh-CN-first",
+    "style": "concise",
+    "explanation": "解释与沟通优先使用中文自然语言，保持简洁。"
+  },
+
+  "contentOptimization": {
+    "workflow": [
+      "获取任务与全局描述，先用中文复述；包含当前状态摘要（文件数、配置项数、已知问题清单）",
+      "给出精简方案/变更要点清单，等待确认；包含风险评估（可能影响的功能点）与回滚方案（Git commit/备份路径）",
+      "执行修改：不改结构，只调表述/一致性，复核逻辑无冲突；明确复核检查点：语法正确性、逻辑一致性、路径有效性、引用完整性",
+      "提供全文更新结果并询问是否需再调整；附带 diff 摘要（新增/修改/删除行数）与测试验证建议（如运行 JSON 校验命令）"
+    ],
+    "fullScanPolicy": {
+      "recursive": true,
+      "includeHidden": true,
+      "noDepthLimit": true,
+      "parseAllFiles": true,
+      "lineByLine": true,
+      "noSummaries": true,
+      "noOmissions": true,
+      "performanceOptimization": {
+        "largeProjectThreshold": 100000,
+        "strategy": "incremental",
+        "samplingMode": "optional"
+      },
+      "sensitivePathProtection": [".env", ".pem", ".key", "secrets/"],
+      "cachePolicy": {
+        "invalidateOnChange": true,
+        "keepLastOnly": true,
+        "hashBased": true
+      },
+      "description": "验证/优化时需对目标目录及子目录（含隐藏目录）逐行解析所有文件，禁止摘要、截断或省略。"
+    },
+    "linkedOptimization": {
+      "optimizeRelatedConfigs": true,
+      "optimizeContextFiles": true,
+      "checkDuplicates": true,
+      "verifyPaths": true,
+      "description": "每次优化需同步审视相关配置与上下文文件，一并优化；优化后检查配置是否重复、指向路径是否正确。"
+    },
+    "autoRepair": {
+      "enabled": true,
+      "strategy": "multi-pass",
+      "askBeforeFix": false,
+      "stopCondition": "task_runs_normally",
+      "maxIterations": 5,
+      "logPath": ".github/logs/repair.log",
+      "logDetails": ["attemptedMethod", "failureReason", "adoptedSolution"],
+      "onFailure": {
+        "action": "terminate_and_report",
+        "reportIncludes": ["errorStack", "attemptedSolutions", "manualInterventionPoints"]
+      },
+      "description": "部署脚本或优化内容后如出现错误，无需询问，自动多维度迭代修复直至任务正常运行，再反馈结果。"
+    },
+    "fullValidationKeyword": {
+      "keyword": "整理验证",
+      "requireBidirectionalChecks": true,
+      "fullCoverage": true,
+      "noOmission": true,
+      "noConflict": true,
+      "noDuplicate": true,
+      "steps": [
+        "覆盖 .github 与根目录全部配置（含隐藏目录与全部文件类型，逐行检查）",
+        "双向检查：配置指向与被指向路径/文件均需匹配且无缺失",
+        "冲突/重复判定：相同键/路径/规则若冲突或重复，需给出消解方案",
+        "输出完整报告：列出检查范围、发现项、修复动作与剩余风险"
+      ],
+      "scopeDetails": {
+        "fileTypes": ["*.md", "*.json", "*.yml", "*.sh", "*.py", "*.js", "*.ts", "all"],
+        "bidirectionalExample": "配置A引用路径B时，需验证B存在且内容符合A的预期（如 .copilot-config.json 引用 languageRules 时，验证对应语言文件确实存在）"
+      },
+      "conflictResolution": {
+        "priorityOrder": [".github/.copilot-config.json", ".github/*.json", "<root>/*.json"],
+        "strategy": "high_priority_overrides"
+      },
+      "reportFormat": {
+        "structure": ["checkItem", "status", "location", "suggestedAction"],
+        "statusOptions": ["pass", "warning", "fail"]
+      },
+      "description": "执行\"整理验证\"时，对所有功能与配置进行双向联动的全量识别与验证，绝不遗漏，确保无冲突、无重复。"
+    },
+    "suggestionKeyword": {
+      "keyword": "提出建议",
+      "multiDimensional": true,
+      "crossFile": true,
+      "crossConfig": true,
+      "crossContext": true,
+      "consistencyFirst": true,
+      "portabilityFirst": true,
+      "noConflict": true,
+      "noDuplicate": true,
+      "categories": ["结构优化", "性能提升", "安全加固", "可维护性", "可移植性", "文档完善"],
+      "priorityLevels": {
+        "must": "影响功能",
+        "recommended": "最佳实践",
+        "optional": "锦上添花"
+      },
+      "impactAssessment": true,
+      "complexityEstimation": ["low", "medium", "high"],
+      "description": "触发\"提出建议\"时，基于全局内容联动提出多维度扩展性优化建议，覆盖跨文件/配置/上下文的改进点，保持一致性、可移植性、无冲突、无重复。"
+    },
+    "mergeKeyword": {
+      "keyword": "合并",
+      "functionalUniqueness": true,
+      "deduplicateContent": true,
+      "unifyLogic": true,
+      "generateUnifiedScript": true,
+      "cleanupRedundancy": true,
+      "hotReload": true,
+      "compatibilityCheck": true,
+      "description": "触发\"合并\"时，对多个配置文件相同键进行功能唯一性识别，合并重复内容，统一逻辑后生成唯一脚本，清理冗余配置；配置修改后自动刷新并验证，自动处理向下/向上兼容性。"
+    }
+  },
+
+  "projectDiscovery": {
+    "enabled": true,
+    "scanDepth": "unlimited",
+    "patterns": {
+      "fileExtensions": [
+        ".py", ".js", ".ts", ".tsx", ".jsx", ".java", ".go", ".rb", ".php",
+        ".cpp", ".c", ".cs", ".swift", ".kotlin", ".rs", ".dart", ".lua",
+        ".html", ".css", ".scss", ".less", ".json", ".yaml", ".yml", ".xml",
+        ".sql", ".md", ".txt", ".sh", ".bash", ".dockerfile", ".conf"
+      ],
+      "configFiles": [
+        "package.json", "pyproject.toml", "requirements.txt", "setup.py",
+        "pom.xml", "build.gradle", "Cargo.toml", "go.mod", "Gemfile",
+        "docker-compose.yml", ".env", ".env.example", "config.json",
+        "tsconfig.json", "webpack.config.js", "jest.config.js",
+        "eslintrc", ".editorconfig", "tox.ini", "Makefile"
+      ],
+      "directories": [
+        "src", "lib", "app", "backend", "frontend", "public", "static",
+        "scripts", "tests", "test", "spec", "docs", "config", "deploy",
+        "docker", "k8s", "server", "client", "models", "views", "controllers"
+      ]
+    },
+    "detection": {
+      "rootMarkers": ["package.json", "pyproject.toml", "pom.xml", "go.mod", ".git"],
+      "languageDetection": "automatic",
+      "frameworkDetection": "automatic",
+      "architectureDetection": "automatic"
+    }
+  },
+
+  "languageRules": {
+    "python": {
+      "enabled": true,
+      "priority": 10,
+      "filePatterns": ["*.py"],
+      "entryPoints": ["main.py", "app.py", "manage.py", "__main__.py"],
+      "configFiles": ["pyproject.toml", "requirements.txt", "setup.py", "setup.cfg"],
+      "conventions": {
+        "naming": "snake_case",
+        "indentation": 4,
+        "maxLineLength": 100,
+        "docstringFormat": "Google"
+      },
+      "analysisRules": {
+        "importDepthCheck": true,
+        "circularImportDetection": true,
+        "typeHintValidation": true,
+        "docstringCompletion": true
+      }
+    },
+    "javascript": {
+      "enabled": true,
+      "priority": 9,
+      "filePatterns": ["*.js", "*.mjs", "*.cjs"],
+      "entryPoints": ["index.js", "main.js", "app.js", "server.js"],
+      "configFiles": ["package.json", "webpack.config.js", ".eslintrc"],
+      "conventions": {
+        "naming": "camelCase",
+        "indentation": 2,
+        "maxLineLength": 100,
+        "quoteStyle": "double"
+      },
+      "analysisRules": {
+        "asyncAwaitUsage": true,
+        "promiseChainDetection": true,
+        "eventEmitterPatterns": true,
+        "middlewareValidation": true
+      }
+    },
+    "typescript": {
+      "enabled": true,
+      "priority": 10,
+      "filePatterns": ["*.ts", "*.tsx"],
+      "entryPoints": ["index.ts", "main.ts", "app.ts", "server.ts"],
+      "configFiles": ["tsconfig.json", "package.json"],
+      "conventions": {
+        "naming": "camelCase",
+        "indentation": 2,
+        "maxLineLength": 100,
+        "typeAnnotation": "explicit"
+      },
+      "analysisRules": {
+        "typeCheckValidation": true,
+        "interfaceSegregation": true,
+        "genericsUsage": true,
+        "tsConfigConsistency": true
+      }
+    },
+    "java": {
+      "enabled": true,
+      "priority": 10,
+      "filePatterns": ["*.java"],
+      "entryPoints": ["Main.java", "Application.java"],
+      "configFiles": ["pom.xml", "build.gradle", "application.properties"],
+      "conventions": {
+        "naming": "PascalCase",
+        "indentation": 4,
+        "maxLineLength": 120,
+        "packageNaming": "lowercase"
+      },
+      "analysisRules": {
+        "mvnDependencyCheck": true,
+        "springBootValidation": true,
+        "oopPrincipleCheck": true,
+        "designPatternDetection": true
+      }
+    },
+    "go": {
+      "enabled": true,
+      "priority": 9,
+      "filePatterns": ["*.go"],
+      "entryPoints": ["main.go"],
+      "configFiles": ["go.mod", "go.sum"],
+      "conventions": {
+        "naming": "mixedCase",
+        "indentation": 1,
+        "maxLineLength": 100,
+        "errorHandling": "explicit"
+      },
+      "analysisRules": {
+        "goroutineDetection": true,
+        "channelUsageValidation": true,
+        "interfaceImplementation": true,
+        "goModuleConsistency": true
+      }
+    },
+    "shell": {
+      "enabled": true,
+      "priority": 7,
+      "filePatterns": ["*.sh", "*.bash"],
+      "entryPoints": ["main.sh", "start.sh", "run.sh"],
+      "configFiles": [".bashrc", ".bash_profile"],
+      "conventions": {
+        "naming": "snake_case",
+        "indentation": 2,
+        "quoteStyle": "single_preferred",
+        "strictMode": "set -e"
+      },
+      "analysisRules": {
+        "variableQuoting": true,
+        "commandSubstitution": true,
+        "errorHandling": true,
+        "portabilityCheck": true
+      }
+    },
+    "html": {
+      "enabled": true,
+      "priority": 8,
+      "filePatterns": ["*.html", "*.htm"],
+      "configFiles": [],
+      "conventions": {
+        "indentation": 2,
+        "semanticMarkup": true,
+        "accessibilityStandard": "WCAG 2.1"
+      },
+      "analysisRules": {
+        "semanticValidation": true,
+        "a11yCheck": true,
+        "metaTagCompletion": true,
+        "scriptInlineDetection": true
+      }
+    },
+    "css": {
+      "enabled": true,
+      "priority": 7,
+      "filePatterns": ["*.css", "*.scss", "*.less"],
+      "configFiles": [],
+      "conventions": {
+        "naming": "kebab-case",
+        "indentation": 2,
+        "preprocessor": "auto-detect"
+      },
+      "analysisRules": {
+        "selectorComplexity": true,
+        "mediaQueryOrganization": true,
+        "cssVariableUsage": true,
+        "responsiveDesignCheck": true
+      }
+    }
+  },
+
+  "codeGenerationRules": {
+    "fileAnalysis": {
+      "scanCurrentDirectory": true,
+      "scanParentDirectories": false,
+      "ignorePatterns": [
+        "node_modules", ".git", ".venv", "venv", "__pycache__",
+        "dist", "build", ".next", ".nuxt", "vendor", ".gradle",
+        "target", "out", "bin", ".egg-info", ".pytest_cache",
+        "coverage", ".nyc_output", ".DS_Store", "*.log"
+      ]
+    },
+    "contextAnalysis": {
+      "extractProjectStructure": true,
+      "identifyDependencies": true,
+      "detectFrameworks": true,
+      "analyzeExistingPatterns": true,
+      "findSimilarCode": true
+    },
+    "optimization": {
+      "reuseExistingCode": {
+        "enabled": true,
+        "priority": "highest",
+        "description": "优先复用和优化现有脚本，而不是创建新文件"
+      },
+      "consistencyCheck": {
+        "enabled": true,
+        "priority": "high",
+        "description": "检查新代码与现有代码的一致性"
+      },
+      "deduplication": {
+        "enabled": true,
+        "priority": "high",
+        "description": "检测并消除重复代码"
+      }
+    },
+    "validation": {
+      "logicalConsistency": true,
+      "pathResolution": true,
+      "dependencyChaining": true,
+      "interfaceAlignment": true,
+      "configurationSync": true
+    }
+  },
+
+  "copilotBehavior": {
+    "naturalLanguageProcessing": {
+      "enabled": true,
+      "matchingAlgorithm": "semantic_similarity",
+      "threshold": 0.75,
+      "actions": {
+        "onMatchFound": "suggest_optimization",
+        "onNoMatch": "create_new",
+        "onPartialMatch": "analyze_integration"
+      }
+    },
+    "analysisDepth": {
+      "scanLevel": "unlimited",
+      "includeSubdirectories": true,
+      "maxFileSize": "unlimited",
+      "respectGitignore": true
+    },
+    "codeCompletion": {
+      "contextWindow": "full_project",
+      "considerPreviousContextFiles": true,
+      "suggestAlternatives": true,
+      "explainReasoning": true
+    },
+    "qualityAssurance": {
+      "performStaticAnalysis": true,
+      "validateLogic": true,
+      "checkCompatibility": true,
+      "testGenerationSuggestions": true
+    }
+  },
+
+  "outputFormat": {
+    "codeStyle": {
+      "enforceConsistency": true,
+      "autoFormat": true,
+      "lintingEnabled": true
+    },
+    "documentation": {
+      "generateDocstrings": true,
+      "explainDecisions": true,
+      "providePossibleIssues": true,
+      "suggestAlternatives": true
+    },
+    "errorHandling": {
+      "includeErrorMessages": true,
+      "provideStackTraces": true,
+      "suggestFixes": true
+    }
+  },
+
+  "projectContextInference": {
+    "rules": [
+      {
+        "name": "detect_monorepo",
+        "pattern": "多个独立的 package.json 或 go.mod 在不同目录",
+        "action": "treat_as_separate_modules"
+      },
+      {
+        "name": "detect_microservices",
+        "pattern": "多个独立服务的子目录，每个都有自己的配置和入口点",
+        "action": "analyze_per_service"
+      },
+      {
+        "name": "detect_frontend_backend_split",
+        "pattern": "frontend 和 backend 目录或类似结构",
+        "action": "analyze_interdependencies"
+      },
+      {
+        "name": "detect_plugin_system",
+        "pattern": "plugins、extensions 或 modules 目录结构",
+        "action": "analyze_plugin_registry"
+      },
+      {
+        "name": "detect_docker_deployment",
+        "pattern": "存在 Dockerfile 或 docker-compose.yml",
+        "action": "consider_containerization"
+      },
+      {
+        "name": "detect_ci_cd",
+        "pattern": ".github/workflows, .gitlab-ci.yml, .travis.yml 等",
+        "action": "analyze_pipeline_integration"
+      }
+    ],
+    "autoDetection": {
+      "enabled": true,
+      "updateOnFileChange": true,
+      "cacheResults": true,
+      "cacheTTL": 3600
+    }
+  },
+
+  "adaptiveRules": {
+    "fileModificationTracking": {
+      "enabled": true,
+      "trackChanges": true,
+      "maintainHistory": true,
+      "detectPattern": true
+    },
+    "learningFromContext": {
+      "enabled": true,
+      "adaptToStyle": true,
+      "rememberPreferences": true,
+      "improveAccuracy": true
+    },
+    "contextualAwareness": {
+      "understandDomain": true,
+      "considerBusinessLogic": true,
+      "alignWithArchitecture": true,
+      "respectConventions": true
+    }
+  },
+
+  "integrationPoints": {
+    "vscodeExtensions": {
+      "copilot": "github.copilot",
+      "copilotChat": "github.copilot-chat",
+      "languageServers": "auto-detect"
+    },
+    "tooling": {
+      "linters": "auto-detect",
+      "formatters": "auto-detect",
+      "testRunners": "auto-detect",
+      "buildTools": "auto-detect"
+    },
+    "versionControl": {
+      "git": true,
+      "trackDiffs": true,
+      "respectGitignore": true
+    }
+  },
+
+  "deploymentScenarios": {
+    "standalone": {
+      "description": "单个文件可以部署到任何项目",
+      "requiresSetup": false,
+      "autoInitialize": true
+    },
+    "workspace": {
+      "description": "在工作区根目录放置此配置",
+      "location": ".copilot/config.json",
+      "autoDiscovery": true
+    },
+    "global": {
+      "description": "全局配置可应用于所有项目",
+      "location": "~/.copilot/config.json",
+      "priority": "lower"
+    }
+  },
+
+  "selfValidation": {
+    "enabled": true,
+    "checkConfigSyntax": true,
+    "validatePatterns": true,
+    "testDiscoveryMechanisms": true,
+    "reportAnomalies": true
+  },
+
+  "languageRulesExtension": {
+    "newLanguages": {
+      "rust": { "naming": "snake_case", "indentation": 4 },
+      "ruby": { "naming": "snake_case", "indentation": 2 },
+      "php": { "naming": "camelCase", "indentation": 4 },
+      "swift": { "naming": "camelCase", "indentation": 4 },
+      "kotlin": { "naming": "camelCase", "indentation": 4 }
+    },
+    "frameworkSpecificRules": {
+      "react": "组件化、Hooks优先",
+      "vue": "组件化、Composition API",
+      "angular": "模块化、依赖注入",
+      "django": "MTV模式、蓝图隔离",
+      "flask": "蓝图模式、插件化",
+      "springBoot": "分层架构、依赖注入"
+    },
+    "crossLanguageConsistency": {
+      "interfacePrefix": "I",
+      "abstractClassPrefix": "Abstract",
+      "commentStyle": "JSDoc/Docstring",
+      "errorHandling": "统一异常类型与日志格式"
+    }
+  },
+
+  "errorHandling": {
+    "levels": {
+      "fatal": { "action": "terminate", "alert": true },
+      "warning": { "action": "log_and_continue", "alert": false },
+      "info": { "action": "display_suggestion", "alert": false }
+    },
+    "logOutputPath": ".github/logs/",
+    "errorCodes": {
+      "E001": "配置冲突",
+      "E002": "路径不存在",
+      "E003": "语法错误",
+      "W001": "性能警告",
+      "I001": "优化建议"
+    }
+  },
+
+  "testingAndValidation": {
+    "selfCheckTool": "python3 -m json.tool .github/.copilot-config.json",
+    "schemaValidation": "jsonschema",
+    "cicdIntegration": "GitHub Actions workflow",
+    "exampleProjects": {
+      "monolith": "Python Django",
+      "microservices": "Go + Docker",
+      "fullstack": "React + Node.js"
+    }
+  },
+
+  "documentationAndExamples": {
+    "quickDiagnostics": "配置不生效 → 检查路径 → 验证语法 → 重启编辑器",
+    "migrationGuide": {
+      "from": [".cursorrules", ".windsurfrules"],
+      "mappingTable": true,
+      "autoConversionScript": true
+    },
+    "tutorialLinks": "https://aka.ms/vscode-instructions-docs"
+  },
+
+  "versionManagement": {
+    "schemaVersion": "1.0.0",
+    "changelogPath": "CHANGELOG.md",
+    "changelogSections": ["新增", "变更", "弃用", "修复"],
+    "deprecationPolicy": {
+      "retentionCycles": 2,
+      "approximateDuration": "6个月",
+      "migrationScriptProvided": true
+    }
+  },
+
+  "communityAndExtensions": {
+    "pluginMechanism": {
+      "customRules": true,
+      "hooks": ["onBeforeScan", "onAfterOptimize"]
+    },
+    "contributionGuide": {
+      "method": "Pull Request",
+      "requirements": ["测试用例", "文档"]
+    },
+    "feedbackChannels": {
+      "issues": "GitHub Issues",
+      "discussions": "GitHub Discussions",
+      "templates": true
+    }
+  },
+
+  "notes": {
+    "usage": "将此配置文件放在项目根目录或任何子目录中，Copilot 将自动识别并应用规则",
+    "flexibility": "配置会根据当前目录内容自动调整，无需预先编译或配置",
+    "portability": "完全独立，可复制到任何项目，立即生效",
+    "noCompilation": "纯配置文件，无需编译、构建或初始化"
+  }
+}

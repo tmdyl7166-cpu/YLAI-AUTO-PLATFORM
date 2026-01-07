@@ -1,0 +1,294 @@
+/* 基础主题与排版 */
+:root {
+  --bg: #0f172a;
+  --fg: #e2e8f0;
+  --card-bg: rgba(2,6,23,0.6);
+  --card-border: rgba(148,163,184,0.18);
+  --accent: #1df0ff;
+}
+
+html, body {
+  height: auto;
+  min-height: 100%;
+  overflow-y: auto;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+body { margin: 0; }
+
+/* 顶部栏：粘性、半透明机械风 */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  gap: clamp(8px, 1.6vw, 16px);
+  padding: clamp(8px, 1.6vw, 16px);
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: saturate(120%) blur(6px);
+  background: rgba(15,23,42,0.78);
+  border-bottom: 1px solid var(--card-border);
+}
+
+.topbar a {
+  color: #93c5fd;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.topbar a.active {
+  color: #22c55e;
+}
+
+/* 主内容容器：居中与响应式间距 */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(12px, 2vw, 24px);
+}
+
+.main-content {
+  display: grid;
+  gap: clamp(12px, 2vw, 24px);
+}
+
+/* 卡片与栅格基础 */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: clamp(12px, 2vw, 20px);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: clamp(10px, 1.8vw, 18px);
+}
+
+/* 进度条容器占位样式（复用组件样式） */
+.progress-bar-container { min-height: 16px; }
+
+/* 页脚 */
+.footer {
+  margin: 24px auto;
+  max-width: 1200px;
+  opacity: 0.75;
+  font-size: 13px;
+  text-align: center;
+}
+/* API Playground 专属主题（浅色文档+演练风格） */
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Microsoft YaHei", Arial, sans-serif;
+  background: #f7fafc;
+  color: #1f2937;
+  margin: 0;
+}
+
+.layout-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 10px 18px;
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 18px;
+  color: #2563eb;
+}
+
+.nav {
+  display: flex;
+  gap: 14px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav li a {
+  color: #374151;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.nav li a:hover {
+  background: #eff6ff;
+}
+
+.main {
+  display: block;
+  flex: 1;
+}
+
+.menu-group-title {
+  font-weight: 700;
+  color: #475569;
+  font-size: 14px;
+  margin: 10px 0 6px;
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-item {
+  display: block;
+  color: #111827;
+  padding: 8px 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.menu-item:hover,
+.menu-item.active {
+  background: #eef2ff;
+  color: #1e3a8a;
+}
+
+.main-content {
+  flex: 1;
+  padding: 18px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.footer {
+  text-align: center;
+  padding: 10px 0;
+  color: #6b7280;
+  border-top: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .main-content, .ap-panel-container, .card {
+    padding: 8px !important;
+    font-size: 15px !important;
+  }
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+@media (max-width: 600px) {
+  .main-content, .ap-panel-container, .card, .grid {
+    font-size: 13px !important;
+    padding: 4px !important;
+  }
+}
+
+/* 卡片悬停与进度动画 */
+.card:hover {
+  box-shadow: 0 6px 22px rgba(37, 99, 235, 0.12);
+  transition: box-shadow .2s ease;
+}
+
+.ap-progress-anim {
+  transition: width .4s ease;
+}
+
+/* 合并面板样式（加作用域前缀，避免与全局冲突） */
+.ap-panel-container {
+  max-width: 1200px;
+  margin: 20px auto;
+}
+
+.ap-panel {
+  margin-bottom: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.ap-panel h2 {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.ap-panel h2 i {
+  margin-right: 10px;
+  color: #ffdd57;
+}
+
+.ap-progress-container {
+  margin-top: 12px;
+}
+
+.ap-bubble {
+  display: inline-block;
+  margin: 5px 8px;
+  padding: 6px 12px;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  font-weight: bold;
+  color: #fff;
+  transition: all 0.3s;
+}
+
+.ap-bubble.active {
+  background: #ffdd57;
+  color: #1a1a2b;
+  transform: scale(1.12);
+}
+
+.ap-panel::before {
+  content: "✨";
+  position: absolute;
+  font-size: 38px;
+  top: -6px;
+  right: 16px;
+  opacity: 0.2;
+}
+
+.ap-panel::after {
+  content: "🚀";
+  position: absolute;
+  font-size: 30px;
+  bottom: 8px;
+  left: 16px;
+  opacity: 0.2;
+}
+
+.ap-bubble:hover {
+  transform: scale(1.06);
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* 进度条圆角提升 */
+.layui-progress-bar {
+  border-radius: 20px;
+}

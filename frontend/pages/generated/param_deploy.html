@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+__HEAD__
+<body>
+  <main id="param-deploy-root" aria-live="polite" style="opacity:0"></main>
+  <script type="module" src="../../static/js/pages/api-doc-progress.js?v=__ASSET_VERSION__" defer></script>
+__FOOTER__
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+__HEAD__
+<body>
+  <main id="param-deploy-root" aria-live="polite" style="opacity:0"></main>
+  <script type="module" src="../../static/js/pages/api-doc-progress.js?v=__ASSET_VERSION__" defer></script>
+__FOOTER__
+</body>
+</html>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/config/save\">执行</button></div>
+  <pre class=\"out\" id=\"param_deploy_2__out\"></pre>
+</div>
+<div class="fn" id="param_deploy_3">
+  <h3>参数校验</h3>
+  <div class="meta">POST /api/config/validate</div>
+  <div class="row">
+    <label>concurrency<input data-input=\"concurrency\" type=\"text\" placeholder=\"concurrency\" /></label>
+    <label>depth<input data-input=\"depth\" type=\"text\" placeholder=\"depth\" /></label>
+    <label>timeout<input data-input=\"timeout\" type=\"text\" placeholder=\"timeout\" /></label>
+    <label>proxy<input data-input=\"proxy\" type=\"text\" placeholder=\"proxy\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/config/validate\">执行</button></div>
+  <pre class=\"out\" id=\"param_deploy_3__out\"></pre>
+</div>
+<div class="fn" id="param_deploy_4">
+  <h3>目标配置分级枚举</h3>
+  <div class="meta">GET /api/config/visibility/options</div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"GET\" data-path=\"/api/config/visibility/options\">执行</button></div>
+  <pre class=\"out\" id=\"param_deploy_4__out\"></pre>
+</div>
+<div class="fn" id="param_deploy_5">
+  <h3>风控识别</h3>
+  <div class="meta">POST /api/risk/inspect</div>
+  <div class="row">
+    <label>keywords<input data-input=\"keywords\" type=\"text\" placeholder=\"keywords\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/risk/inspect\">执行</button></div>
+  <pre class=\"out\" id=\"param_deploy_5__out\"></pre>
+</div>
+<div class="fn" id="param_deploy_6">
+  <h3>结果排序策略预览</h3>
+  <div class="meta">POST /api/config/ranking/preview</div>
+  <div class="row">
+    <label>weights<input data-input=\"weights\" type=\"text\" placeholder=\"weights\" /></label>
+    <label>rules<input data-input=\"rules\" type=\"text\" placeholder=\"rules\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/config/ranking/preview\">执行</button></div>
+  <pre class=\"out\" id=\"param_deploy_6__out\"></pre>
+</div>
+<div class="fn" id="param_deploy_7">
+  <h3>配置保存</h3>
+  <div class="meta">POST /api/config/save</div>
+  <div class="row">
+    <label>config<input data-input=\"config\" type=\"text\" placeholder=\"config\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/config/save\">执行</button></div>
+  <pre class=\"out\" id=\"param_deploy_7__out\"></pre>
+</div>
+<div class="fn" id="param_deploy_8">
+  <h3>配置加载</h3>
+  <div class="meta">GET /api/config/load</div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"GET\" data-path=\"/api/config/load\">执行</button></div>
+  <pre class=\"out\" id=\"param_deploy_8__out\"></pre>
+</div>
+<div class="fn" id="param_deploy_9">
+  <h3>服务健康</h3>
+  <div class="meta">GET /api/status</div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"GET\" data-path=\"/api/status\">执行</button></div>
+  <pre class=\"out\" id=\"param_deploy_9__out\"></pre>
+</div>
+<div class="fn" id="param_deploy_10">
+  <h3>事件联动</h3>
+  <div class="meta">POST /api/events/trigger</div>
+  <div class="row">
+    <label>event_name<input data-input=\"event_name\" type=\"text\" placeholder=\"event_name\" /></label>
+    <label>payload<input data-input=\"payload\" type=\"text\" placeholder=\"payload\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/events/trigger\">执行</button></div>
+  <pre class=\"out\" id=\"param_deploy_10__out\"></pre>
+</div>
+
+    <p style="margin-top:24px"><a href="/pages/index.html">返回首页</a></p>
+  <div class="card" style="margin-top:12px;">
+    <h3>后端脚本模块（统一来源：/api/modules）</h3>
+    <div id="gen-modules" class="grid"></div>
+  </div>
+  <script type="module">
+    import { apiModules, bindQuickActions } from '/static/js/modules.js';
+    async function render(){
+      const list = await apiModules();
+      const host = document.getElementById('gen-modules');
+      if(!host) return; host.innerHTML='';
+      list.forEach(name=>{
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><div style="font-weight:700">${name}</div><div class="meta">脚本</div></div><div style="display:flex;gap:8px"><button class="btn" data-act="run" data-name="${name}">运行</button><button class="btn" data-act="status">状态</button><button class="btn" data-act="curl" data-name="${name}">调用</button></div>`;
+        host.appendChild(card);
+      });
+      bindQuickActions(host);
+    }
+    render();
+  </script>
+</body>
+<script src="/static/js/healthcheck.js"></script>
+</html>

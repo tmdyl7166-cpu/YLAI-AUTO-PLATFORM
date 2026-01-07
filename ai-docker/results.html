@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>AI 优化结果与交互控制台</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; }
+    .pending { color: orange; }
+    .optimized { color: green; }
+    .rollback { color: red; }
+    pre { background: #f6f6f6; padding: 1em; border-radius: 4px; }
+    button { margin: 0.2em 0.5em; }
+  </style>
+</head>
+<body>
+  <h1>AI 优化结果与交互控制台</h1>
+  <div>
+    <button onclick="triggerOptimize()">立即优化</button>
+    <button onclick="triggerSchedule()">定时优化(每小时)</button>
+    <button onclick="triggerOnChange()">变更触发</button>
+    <button onclick="stopSchedule()">停止定时</button>
+    <span id="status"></span>
+  </div>
+  <h2>优化结果</h2>
+  <div id="results"></div>
+
+  <!-- AI增强结果面板 -->
+  <h2>🤖 AI 多模型联动分析</h2>
+  <div id="ai-enhanced-results" style="margin-top: 1em;"></div>
+
+  <script>
+    async function fetchResults() {
+      const res = await fetch('http://localhost:9001/results');
+      const data = await res.json();
+      const resultsDiv = document.getElementById('results');
+      const aiResultsDiv = document.getElementById('ai-enhanced-results');
+
+      if (!data.items || !data.items.length) {
+        resultsDiv.innerHTML = '<em>暂无优化记录</em>';
+        aiResultsDiv.innerHTML = '<em>暂无AI分析结果</em>';
+        return;
+      }
+
+      // 基础结果显示
+      resultsDiv.innerHTML = data.items.map(item => {
+        let color = item.status;
+        let btn = '';
+        if (item.status === 'pending_approval') {
+          btn = `<button onclick=\"approve('${item.file}')\">审批通过</button>`;
+        }
+
+        // AI增强标识
+        let aiBadge = '';
+        if (item.ai_enhanced) {
+          aiBadge = '<span style="background:#0078d7;color:white;padding:2px 6px;border-radius:3px;font-size:0.8em;margin-left:0.5em;">AI增强</span>';
+        }
+
+        return `<div class='${color}'><b>${item.file}</b> 状态: <span>${item.status}</span> ${aiBadge} ${btn}<br>` +
+          (item.stages ? `<details><summary>详情</summary><pre>${JSON.stringify(item.stages, null, 2)}</pre></details>` : '') +
+          `</div>`;
+      }).join('<hr>');
+
+      // AI增强结果显示
+      const aiEnhancedItems = data.items.filter(item => item.ai_enhanced);
+      if (aiEnhancedItems.length > 0) {
+        aiResultsDiv.innerHTML = aiEnhancedItems.map(item => {
+          const analysis = item.ai_analysis || {};
+          return `
+            <div style="border:1px solid #ddd; border-radius:6px; padding:1em; margin:0.5em 0; background:#f9f9f9;">
+              <h4 style="margin-top:0; color:#0078d7;">📄 ${item.file}</h4>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:1em;">
+                <div>
+                  <strong>AI分析结果:</strong><br>
+                  <pre style="background:white; padding:0.5em; border-radius:4px; margin-top:0.5em; font-size:0.9em;">${JSON.stringify(analysis, null, 2)}</pre>
+                </div>
+                <div>
+                  <strong>优化建议:</strong><br>
+                  <div style="background:white; padding:0.5em; border-radius:4px; margin-top:0.5em;">
+                    ${analysis.recommendations ? analysis.recommendations.map(rec => `• ${rec}`).join('<br>') : '暂无建议'}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } else {
+        aiResultsDiv.innerHTML = '<em>暂无AI增强分析结果</em>';
+      }
+
+      // 显示AI模型使用情况
+      if (data.ai_models_used) {
+        const modelsInfo = Object.entries(data.ai_models_used).map(([model, status]) => {
+          const statusColor = status === 'online' ? '#28a745' : '#dc3545';
+          return `<span style="color:${statusColor};">${model}: ${status}</span>`;
+        }).join(', ');
+
+        aiResultsDiv.innerHTML += `
+          <div style="margin-top:1em; padding:0.5em; background:#e9ecef; border-radius:4px;">
+            <strong>AI模型状态:</strong> ${modelsInfo}
+          </div>
+        `;
+      }
+    }
+    async function triggerOptimize() {
+      setStatus('正在触发优化...');
+      await fetch('http://localhost:9001/trigger', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({auto_approve:true})});
+      setStatus('已触发优化');
+      setTimeout(fetchResults, 2000);
+    }
+    async function triggerSchedule() {
+      setStatus('已启动定时优化(每小时)');
+      await fetch('http://localhost:9001/trigger/schedule', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({interval:3600,auto_approve:true})});
+    }
+    async function stopSchedule() {
+      setStatus('已请求停止定时');
+      await fetch('http://localhost:9001/trigger/stop', {method:'POST'});
+    }
+    async function triggerOnChange() {
+      setStatus('已启动变更触发');
+      await fetch('http://localhost:9001/trigger/onchange', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({watch_dir:"./",interval:10,auto_approve:true})});
+    }
+    async function approve(file) {
+      setStatus('正在审批...');
+      await fetch('http://localhost:9001/approve', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({file})});
+      setStatus('已审批');
+      setTimeout(fetchResults, 2000);
+    }
+    function setStatus(msg) {
+      document.getElementById('status').innerText = msg;
+    }
+    setInterval(fetchResults, 5000);
+    fetchResults();
+  </script>
+</body>
+</html>

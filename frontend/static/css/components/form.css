@@ -1,0 +1,42 @@
+/* 通用表单组件样式 */
+.form-component {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 0;
+}
+.form-component label {
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: #333;
+}
+.form-component input,
+.form-component select,
+.form-component textarea {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e0e7ef;
+  font-size: 15px;
+  background: #f8fafc;
+  transition: border-color .18s, box-shadow .18s;
+}
+.form-component input:focus,
+.form-component select:focus,
+.form-component textarea:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px #667eea33;
+}
+.form-component .btn {
+  margin-top: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: #667eea;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background .18s;
+}
+.form-component .btn:active {
+  background: #42e695;
+}

@@ -1,0 +1,45 @@
+:root{
+  --bg: #0a0f1e;
+  --card: #0f162d;
+  --border: rgba(29,240,255,0.25);
+  --accent: #1de9b6;
+  --text: #e6f1ff;
+  --muted: #9fb3c8;
+}
+*{box-sizing: border-box}
+html,body{height:100%}
+body{margin:0; background: radial-gradient(1200px 600px at 10% -10%, rgba(29,240,255,0.12), transparent 60%),
+                          radial-gradient(1000px 500px at 90% -10%, rgba(29,240,255,0.10), transparent 60%),
+                          var(--bg);
+     color: var(--text); font-family: ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";}
+
+.yl-topbar{position:sticky; top:0; z-index:10; display:flex; align-items:center; justify-content:space-between; padding:12px 18px; background:#0b1226cc; backdrop-filter: blur(6px); border-bottom:1px solid var(--border)}
+.yl-topbar .brand{font-weight:700; letter-spacing:.5px; color:var(--accent)}
+.yl-topbar .nav{display:flex; gap:12px}
+.yl-topbar .nav a{color:var(--muted); text-decoration:none; padding:6px 10px; border:1px solid transparent; border-radius:8px}
+.yl-topbar .nav a:hover{color:var(--text); border-color:var(--border); background: #0f1c35}
+.yl-topbar .nav a.active{color:var(--text); border-color:var(--border)}
+
+#ai-demo-root{max-width: 820px; margin: 24px auto; padding: 0 16px}
+.yl-card{background: linear-gradient(180deg, rgba(40,62,120,0.18), rgba(18,25,48,0.36)), var(--card); border:1px solid var(--border); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);}
+.yl-container{padding: 18px}
+
+.title{margin: 0 0 12px 0; font-size: 18px; color: var(--text)}
+.form-grid{display: grid; grid-template-columns: 1fr; gap: 12px}
+label{display:block; color: var(--muted); font-size: 14px}
+select, input[type=number], textarea{width:100%; margin-top:6px; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:#0e1731; color:var(--text); outline:none}
+textarea{min-height:100px; resize: vertical}
+.btn-row{display:flex; justify-content:flex-end}
+button{cursor:pointer; border-radius:10px; padding:10px 16px; font-weight:600}
+button.primary{background:#2563eb; color:#fff; border:1px solid #1b49b2}
+button.primary:hover{background:#1e40af}
+button.ghost{background:#0a1024; color:#9fb3c8; border:1px solid var(--border)}
+button.ghost:hover{color:#e6f1ff}
+
+.result{background:#0d1328; border:1px dashed var(--border); border-radius:10px; padding:12px; color:#dbeafe; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; min-height: 64px; white-space: pre-wrap}
+.actions{display:flex; gap:10px; margin-top:10px}
+
+@media (max-width: 700px){
+  #ai-demo-root{margin: 16px auto}
+  .yl-container{padding: 14px}
+}

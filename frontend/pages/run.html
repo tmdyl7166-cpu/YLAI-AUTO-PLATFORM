@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>运行控制 - YLAI-AUTO-PLATFORM</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { background: #f0f0f0; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .control-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .panel { border: 1px solid #ddd; padding: 20px; border-radius: 8px; background: white; }
+        .task-item { padding: 10px; margin: 10px 0; border: 1px solid #eee; border-radius: 4px; }
+        .status-running { color: green; }
+        .status-stopped { color: red; }
+        .btn { padding: 8px 16px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .back-link { margin-top: 20px; }
+        .back-link a { color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>运行控制面板</h1>
+            <p>启动、停止和监控自动化任务</p>
+        </div>
+
+        <div class="control-panel">
+            <div class="panel">
+                <h3>任务管理</h3>
+                <div class="task-item">
+                    <strong>AI 训练任务</strong>
+                    <span class="status-stopped">已停止</span>
+                    <button class="btn btn-success">启动</button>
+                    <button class="btn btn-danger">停止</button>
+                </div>
+                <div class="task-item">
+                    <strong>数据采集任务</strong>
+                    <span class="status-running">运行中</span>
+                    <button class="btn btn-success">启动</button>
+                    <button class="btn btn-danger">停止</button>
+                </div>
+                <div class="task-item">
+                    <strong>监控任务</strong>
+                    <span class="status-running">运行中</span>
+                    <button class="btn btn-success">启动</button>
+                    <button class="btn btn-danger">停止</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>系统控制</h3>
+                <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;">启动所有服务</button>
+                <button class="btn btn-danger" style="width: 100%; margin-bottom: 10px;">停止所有服务</button>
+                <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;">重启系统</button>
+
+                <h4>日志输出</h4>
+                <div style="height: 200px; overflow-y: auto; background: #f8f9fa; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    <div>13:45:01 - 系统启动完成</div>
+                    <div>13:45:02 - AI模块加载成功</div>
+                    <div>13:45:03 - 数据库连接建立</div>
+                    <div>13:45:04 - 监控服务启动</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="/pages/index.html">← 返回主页</a>
+        </div>
+    </div>
+</body>
+</html>

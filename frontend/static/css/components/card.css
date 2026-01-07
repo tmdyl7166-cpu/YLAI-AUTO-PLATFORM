@@ -1,0 +1,23 @@
+/* Basic card component styling */
+.card {
+  background: #0d0f12;
+  border: 1px solid rgba(29,240,255,0.12);
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+  color: #e0f7ff;
+}
+.card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+.card-note {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* Layout helpers */
+.layout { display: grid; grid-template-columns: 320px 1fr 360px; gap: 12px; }
+.left { display: flex; flex-direction: column; gap: 12px; }
+.center { display: flex; flex-direction: column; gap: 12px; }
+.right { display: flex; flex-direction: column; gap: 12px; }

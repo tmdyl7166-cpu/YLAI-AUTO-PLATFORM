@@ -1,0 +1,15 @@
+/* Common mechanical theme overrides for buttons and tables */
+:root{ --yl-border:#1f2937; --yl-bg:#0b0f14; --yl-panel:#0f172a; --yl-text:#e5e7eb; --yl-muted:#9ca3af; --yl-accent-start:#7c3aed; --yl-accent-end:#06b6d4; }
+
+body{ background: var(--yl-bg); color: var(--yl-text); }
+
+button{ background: linear-gradient(90deg,var(--yl-accent-start),var(--yl-accent-end)); color:#021027; border:none; border-radius:10px; padding:10px 14px; cursor:pointer; font-weight:600; }
+button:disabled{ opacity:.6; cursor:not-allowed; }
+
+.table, table{ width:100%; border-collapse:collapse; }
+th,td{ border:1px solid var(--yl-border); padding:8px; }
+th{ background: var(--yl-panel); }
+
+input, select{ background:#0b1220; border:1px solid var(--yl-border); color:var(--yl-text); border-radius:8px; padding:8px 10px; }
+
+.card{ background: var(--yl-panel); border:1px solid var(--yl-border); border-radius:14px; }

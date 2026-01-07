@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>可视化管道 - YLAI-AUTO-PLATFORM</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { background: #f0f0f0; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .pipeline-canvas { height: 600px; border: 2px solid #ddd; border-radius: 8px; background: white; position: relative; overflow: hidden; }
+        .node { position: absolute; width: 120px; height: 60px; border: 2px solid #007bff; border-radius: 8px; background: white; display: flex; align-items: center; justify-content: center; cursor: move; font-size: 12px; text-align: center; }
+        .node.ai { border-color: #28a745; }
+        .node.data { border-color: #ffc107; }
+        .node.monitor { border-color: #dc3545; }
+        .connection { position: absolute; height: 2px; background: #007bff; transform-origin: 0 0; }
+        .toolbar { margin-bottom: 20px; padding: 10px; background: #f8f9fa; border-radius: 4px; }
+        .btn { padding: 8px 16px; margin: 0 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .back-link { margin-top: 20px; }
+        .back-link a { color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>可视化管道编辑器</h1>
+            <p>设计和编辑自动化工作流程</p>
+        </div>
+
+        <div class="toolbar">
+            <button class="btn btn-primary">添加AI节点</button>
+            <button class="btn btn-primary">添加数据节点</button>
+            <button class="btn btn-primary">添加监控节点</button>
+            <button class="btn btn-secondary">清空画布</button>
+            <button class="btn btn-secondary">保存流程</button>
+            <button class="btn btn-secondary">加载流程</button>
+        </div>
+
+        <div class="pipeline-canvas" id="canvas">
+            <!-- AI 训练节点 -->
+            <div class="node ai" style="left: 100px; top: 100px;">
+                AI 训练<br>模型优化
+            </div>
+
+            <!-- 数据采集节点 -->
+            <div class="node data" style="left: 300px; top: 100px;">
+                数据采集<br>分布式爬取
+            </div>
+
+            <!-- 数据处理节点 -->
+            <div class="node data" style="left: 500px; top: 100px;">
+                数据处理<br>清洗过滤
+            </div>
+
+            <!-- 监控节点 -->
+            <div class="node monitor" style="left: 700px; top: 100px;">
+                实时监控<br>性能指标
+            </div>
+
+            <!-- 结果输出节点 -->
+            <div class="node" style="left: 500px; top: 300px;">
+                结果输出<br>报告生成
+            </div>
+
+            <!-- 连接线 -->
+            <div class="connection" style="left: 220px; top: 130px; width: 80px; transform: rotate(0deg);"></div>
+            <div class="connection" style="left: 420px; top: 130px; width: 80px; transform: rotate(0deg);"></div>
+            <div class="connection" style="left: 620px; top: 130px; width: 80px; transform: rotate(0deg);"></div>
+            <div class="connection" style="left: 550px; top: 220px; width: 80px; transform: rotate(90deg);"></div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+            <h3>当前流程说明</h3>
+            <ol>
+                <li><strong>AI 训练节点</strong>: 执行机器学习模型的训练和优化</li>
+                <li><strong>数据采集节点</strong>: 分布式数据采集和爬取</li>
+                <li><strong>数据处理节点</strong>: 数据清洗、过滤和预处理</li>
+                <li><strong>监控节点</strong>: 实时监控系统性能和任务状态</li>
+                <li><strong>结果输出节点</strong>: 生成分析报告和可视化结果</li>
+            </ol>
+        </div>
+
+        <div class="back-link">
+            <a href="/pages/index.html">← 返回主页</a>
+        </div>
+    </div>
+
+    <script>
+        // 简单的拖拽功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const nodes = document.querySelectorAll('.node');
+
+            nodes.forEach(node => {
+                let isDragging = false;
+                let startX, startY, startLeft, startTop;
+
+                node.addEventListener('mousedown', function(e) {
+                    isDragging = true;
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    startLeft = parseInt(node.style.left);
+                    startTop = parseInt(node.style.top);
+                    node.style.cursor = 'grabbing';
+                });
+
+                document.addEventListener('mousemove', function(e) {
+                    if (!isDragging) return;
+
+                    const dx = e.clientX - startX;
+                    const dy = e.clientY - startY;
+
+                    node.style.left = (startLeft + dx) + 'px';
+                    node.style.top = (startTop + dy) + 'px';
+                });
+
+                document.addEventListener('mouseup', function() {
+                    if (isDragging) {
+                        isDragging = false;
+                        node.style.cursor = 'move';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

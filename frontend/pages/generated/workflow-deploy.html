@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+__HEAD__
+<body>
+  <main id="workflow-deploy-root" aria-live="polite" style="opacity:0"></main>
+  <script type="module" src="../../static/js/pages/api-doc-progress.js?v=__ASSET_VERSION__" defer></script>
+__FOOTER__
+</body>
+</html>
+  <pre class=\"out\" id=\"workflow_deploy_3__out\"></pre>
+</div>
+<div class="fn" id="workflow_deploy_4">
+  <h3>基础逻辑2</h3>
+  <div class="meta">GET /api/workflow/templates/basic2</div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"GET\" data-path=\"/api/workflow/templates/basic2\">执行</button></div>
+  <pre class=\"out\" id=\"workflow_deploy_4__out\"></pre>
+</div>
+<div class="fn" id="workflow_deploy_5">
+  <h3>基础逻辑3</h3>
+  <div class="meta">GET /api/workflow/templates/basic3</div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"GET\" data-path=\"/api/workflow/templates/basic3\">执行</button></div>
+  <pre class=\"out\" id=\"workflow_deploy_5__out\"></pre>
+</div>
+<div class="fn" id="workflow_deploy_6">
+  <h3>开启突破限制开关</h3>
+  <div class="meta">POST /api/workflow/limits/toggle</div>
+  <div class="row">
+    <label>enabled<input data-input=\"enabled\" type=\"text\" placeholder=\"enabled\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/workflow/limits/toggle\">执行</button></div>
+  <pre class=\"out\" id=\"workflow_deploy_6__out\"></pre>
+</div>
+<div class="fn" id="workflow_deploy_7">
+  <h3>高级逻辑</h3>
+  <div class="meta">GET /api/workflow/templates/advanced</div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"GET\" data-path=\"/api/workflow/templates/advanced\">执行</button></div>
+  <pre class=\"out\" id=\"workflow_deploy_7__out\"></pre>
+</div>
+
+    <p style="margin-top:24px"><a href="/pages/index.html">返回首页</a></p>
+  <div class="card" style="margin-top:12px;">
+    <h3>后端脚本模块（统一来源：/api/modules）</h3>
+    <div id="gen-modules" class="grid"></div>
+  </div>
+  <script type="module">
+    import { apiModules, bindQuickActions } from '/static/js/modules.js';
+    async function render(){
+      const list = await apiModules();
+      const host = document.getElementById('gen-modules');
+      if(!host) return; host.innerHTML='';
+      list.forEach(name=>{
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><div style="font-weight:700">${name}</div><div class="meta">脚本</div></div><div style="display:flex;gap:8px"><button class="btn" data-act="run" data-name="${name}">运行</button><button class="btn" data-act="status">状态</button><button class="btn" data-act="curl" data-name="${name}">调用</button></div>`;
+        host.appendChild(card);
+      });
+      bindQuickActions(host);
+    }
+    render();
+  </script>
+</body>
+<script src="/static/js/healthcheck.js"></script>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YLAI-AUTO-PLATFORM 主页</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { background: #f0f0f0; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; background: white; }
+        .card h3 { margin-top: 0; color: #333; }
+        .card a { color: #007bff; text-decoration: none; }
+        .card a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>YLAI-AUTO-PLATFORM</h1>
+            <p>智能自动化平台 - 主窗口与分区管理</p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>🚀 运行控制</h3>
+                <p>启动和监控自动化任务</p>
+                <a href="/pages/run.html">进入运行页面</a>
+            </div>
+
+            <div class="card">
+                <h3>📊 监控面板</h3>
+                <p>实时监控系统状态和性能</p>
+                <a href="/pages/monitor.html">进入监控页面</a>
+            </div>
+
+            <div class="card">
+                <h3>🔗 可视化管道</h3>
+                <p>查看和编辑自动化流程</p>
+                <a href="/pages/visual_pipeline.html">进入管道页面</a>
+            </div>
+
+            <div class="card">
+                <h3>📚 API 文档</h3>
+                <p>查看系统API接口文档</p>
+                <a href="/pages/api-doc.html">进入API文档</a>
+            </div>
+
+            <div class="card">
+                <h3>⚙️ 系统设置</h3>
+                <p>配置系统参数和偏好</p>
+                <a href="/pages/settings.html">进入设置页面</a>
+            </div>
+
+            <div class="card">
+                <h3>🔐 权限管理</h3>
+                <p>管理用户角色和权限</p>
+                <a href="/pages/rbac.html">进入权限管理</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

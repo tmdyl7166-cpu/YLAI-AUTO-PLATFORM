@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+__HEAD__
+<body>
+  <main id="smart-schedule-root" aria-live="polite" style="opacity:0"></main>
+  <script type="module" src="../../static/js/pages/api-doc-progress.js?v=__ASSET_VERSION__" defer></script>
+__FOOTER__
+</body>
+</html>
+  <div class="meta">GET /api/scheduler/stop</div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"GET\" data-path=\"/api/scheduler/stop\">执行</button></div>
+  <pre class=\"out\" id=\"smart_schedule_2__out\"></pre>
+</div>
+<div class="fn" id="smart_schedule_3">
+  <h3>调度器状态</h3>
+  <div class="meta">GET /api/scheduler/status</div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"GET\" data-path=\"/api/scheduler/status\">执行</button></div>
+  <pre class=\"out\" id=\"smart_schedule_3__out\"></pre>
+</div>
+<div class="fn" id="smart_schedule_4">
+  <h3>AI识别服务注册</h3>
+  <div class="meta">POST /api/ai/register</div>
+  <div class="row">
+    <label>model<input data-input=\"model\" type=\"text\" placeholder=\"model\" /></label>
+    <label>route<input data-input=\"route\" type=\"text\" placeholder=\"route\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/ai/register\">执行</button></div>
+  <pre class=\"out\" id=\"smart_schedule_4__out\"></pre>
+</div>
+<div class="fn" id="smart_schedule_5">
+  <h3>AI联动编排</h3>
+  <div class="meta">POST /api/ai/compose</div>
+  <div class="row">
+    <label>pipeline<input data-input=\"pipeline\" type=\"text\" placeholder=\"pipeline\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/ai/compose\">执行</button></div>
+  <pre class=\"out\" id=\"smart_schedule_5__out\"></pre>
+</div>
+<div class="fn" id="smart_schedule_6">
+  <h3>采集脚本异步调用</h3>
+  <div class="meta">POST /api/scripts/exec-async</div>
+  <div class="row">
+    <label>script<input data-input=\"script\" type=\"text\" placeholder=\"script\" /></label>
+    <label>params<input data-input=\"params\" type=\"text\" placeholder=\"params\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/scripts/exec-async\">执行</button></div>
+  <pre class=\"out\" id=\"smart_schedule_6__out\"></pre>
+</div>
+<div class="fn" id="smart_schedule_7">
+  <h3>失败回退与策略落盘</h3>
+  <div class="meta">POST /api/scheduler/fallback</div>
+  <div class="row">
+    <label>task_id<input data-input=\"task_id\" type=\"text\" placeholder=\"task_id\" /></label>
+    <label>strategy<input data-input=\"strategy\" type=\"text\" placeholder=\"strategy\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/scheduler/fallback\">执行</button></div>
+  <pre class=\"out\" id=\"smart_schedule_7__out\"></pre>
+</div>
+
+    <p style="margin-top:24px"><a href="/pages/index.html">返回首页</a></p>
+  <div class="card" style="margin-top:12px;">
+    <h3>后端脚本模块（统一来源：/api/modules）</h3>
+    <div id="gen-modules" class="grid"></div>
+  </div>
+  <script type="module">
+    import { apiModules, bindQuickActions } from '/static/js/modules.js';
+    async function render(){
+      const list = await apiModules();
+      const host = document.getElementById('gen-modules');
+      if(!host) return; host.innerHTML='';
+      list.forEach(name=>{
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><div style="font-weight:700">${name}</div><div class="meta">脚本</div></div><div style="display:flex;gap:8px"><button class="btn" data-act="run" data-name="${name}">运行</button><button class="btn" data-act="status">状态</button><button class="btn" data-act="curl" data-name="${name}">调用</button></div>`;
+        host.appendChild(card);
+      });
+      bindQuickActions(host);
+    }
+    render();
+  </script>
+</body>
+<script src="/static/js/healthcheck.js"></script>
+</html>

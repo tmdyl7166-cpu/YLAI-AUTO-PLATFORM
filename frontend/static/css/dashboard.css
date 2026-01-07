@@ -1,0 +1,7 @@
+/* Minimal dashboard styles for feature visibility and layout */
+.feature-block{ transition: opacity .18s ease, transform .18s ease; }
+.feature-block[style*="display: none"]{ opacity:0; transform:scale(.98); }
+.dashboard-grid{ display:grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap:12px; }
+.dashboard-card{ border:1px solid rgba(29,240,255,.25); border-radius:8px; padding:12px; background:#0a0f1e; }
+.dashboard-card .title{ font-weight:700; color:#1de9b6; margin-bottom:6px; }
+.dashboard-card .actions{ display:flex; gap:8px; }

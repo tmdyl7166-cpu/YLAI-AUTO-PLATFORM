@@ -1,0 +1,11 @@
+policy_level: 1
+ai:
+  auto_param_fix: false
+network:
+  max_concurrency: 4
+  request_interval_ms: 1000
+crawler:
+  obey_robots: true
+safety:
+  enable_rate_limit_guard: true
+  enable_task_kill_switch: true

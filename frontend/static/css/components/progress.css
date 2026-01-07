@@ -1,0 +1,29 @@
+/* 通用进度条样式 */
+.progress-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 4px 0;
+}
+.progress-bar-bg {
+  flex: 1;
+  background: #e0e7ef;
+  border-radius: 8px;
+  height: 16px;
+  overflow: hidden;
+  position: relative;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg,#42e695 0%,#667eea 100%);
+  border-radius: 8px;
+  transition: width 0.4s;
+  width: 0%;
+}
+.progress-bar-text {
+  font-size: 12px;
+  color: #764ba2;
+  min-width: 36px;
+  text-align: right;
+}

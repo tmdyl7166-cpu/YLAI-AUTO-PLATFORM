@@ -1,0 +1,101 @@
+/* 基础滚动与尺寸：允许纵向滚动，避免固定高度导致无法滑动 */
+html, body {
+  height: auto;
+  min-height: 100%;
+  overflow-y: auto;
+}
+
+/* 主体区域最小高度，保证内容不足也能撑满视窗 */
+main {
+  min-height: 100vh;
+}
+
+/* 顶部栏与导航在小屏时自动换行 */
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(8px, 1.5vw, 16px);
+  padding: clamp(8px, 1.5vw, 16px);
+}
+
+/* 自适应网格：左侧与内容区按比例缩放，避免溢出 */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(0, 2fr);
+  gap: clamp(12px, 2vw, 24px);
+}
+
+/* 卡片间距与内边距随屏幕缩放 */
+.card {
+  padding: clamp(12px, 2vw, 20px);
+  margin-bottom: clamp(10px, 1.8vw, 16px);
+}
+
+/* 图表或中心面板高度随视口比例变化，避免过高或过低 */
+#center-panels, #right-panels {
+  min-height: clamp(240px, 32vh, 540px);
+}
+
+/* 控件在窄屏下缩小但保持可点击区域 */
+.btn {
+  padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 16px);
+}
+
+/* 根字体按视口缩放，维持整体等比例视觉 */
+:root {
+  font-size: clamp(14px, 1.4vw, 16px);
+}
+/* Responsive layout tuning for run page */
+
+:root {
+  --gap-xxs: 4px;
+  --gap-xs: 8px;
+  --gap-sm: 12px;
+  --gap-md: 16px;
+  --gap-lg: 24px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 300px 1fr 340px;
+  gap: var(--gap-sm);
+  align-items: start;
+}
+
+.left, .center, .right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+/* Breakpoints */
+@media (max-width: 1280px) {
+  .layout { grid-template-columns: 260px 1fr 320px; }
+}
+
+@media (max-width: 980px) {
+  .layout { grid-template-columns: 1fr; }
+  .left, .center, .right { order: initial; }
+  .left, .right { flex-direction: row; flex-wrap: wrap; }
+}
+
+/* Topbar responsive */
+#topbar .topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  padding: var(--gap-sm);
+}
+#topbar .brand { font-weight: 700; }
+#topbar .controls { display: flex; align-items: center; gap: var(--gap-xs); }
+#global-health-indicator #ghi-dot {
+  width: 10px; height: 10px; border-radius: 999px; display: inline-block;
+}
+
+/* Utility */
+.btn { cursor: pointer; }
+.card h3 { font-weight: 600; }
+.chart-placeholder { min-height: 140px; }

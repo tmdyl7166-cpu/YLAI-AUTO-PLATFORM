@@ -1,0 +1,8 @@
+:root { color-scheme: light dark; }
+body { font-family: system-ui, sans-serif; margin: 0; padding: 0; }
+header { padding: 16px; border-bottom: 1px solid #ddd; }
+main { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 16px; }
+.panel { display: flex; flex-direction: column; gap: 8px; }
+textarea { width: 100%; font-family: inherit; }
+pre { background: rgba(0,0,0,0.05); padding: 12px; min-height: 150px; overflow: auto; }
+button { align-self: flex-start; padding: 8px 12px; }

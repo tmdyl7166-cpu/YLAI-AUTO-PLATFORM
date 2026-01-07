@@ -1,0 +1,8 @@
+/* 模块基础样式：统一主题引用与挂载点视觉 */
+@import url('../components/theme.css');
+
+/* 页面公共挂载点 */
+#app-root { opacity: 0; transition: opacity .2s ease; }
+/* 初始不使用完全透明，避免黑屏；公共脚本会将其提升至 1 */
+#app-root { opacity: 0.01; transition: opacity .2s ease; }
+.reveal { opacity: 1 !important; }

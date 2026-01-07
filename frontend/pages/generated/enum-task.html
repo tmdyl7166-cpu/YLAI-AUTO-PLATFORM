@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+__HEAD__
+<body>
+  <main id="enum-root" aria-live="polite" style="opacity:0"></main>
+  <script type="module" src="../../static/js/pages/api-doc-progress.js?v=__ASSET_VERSION__" defer></script>
+__FOOTER__
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+__HEAD__
+<body>
+  <main id="enum-root" aria-live="polite" style="opacity:0"></main>
+  <script type="module" src="../../static/js/pages/api-doc-progress.js?v=__ASSET_VERSION__" defer></script>
+__FOOTER__
+</body>
+</html>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/enum/bin/check\">执行</button></div>
+  <pre class=\"out\" id=\"enum_task_2__out\"></pre>
+</div>
+<div class="fn" id="enum_task_3">
+  <h3>游戏卡枚举</h3>
+  <div class="meta">POST /api/enum/gamecard/run</div>
+  <div class="row">
+    <label>pattern<input data-input=\"pattern\" type=\"text\" placeholder=\"pattern\" /></label>
+    <label>rules<input data-input=\"rules\" type=\"text\" placeholder=\"rules\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/enum/gamecard/run\">执行</button></div>
+  <pre class=\"out\" id=\"enum_task_3__out\"></pre>
+</div>
+<div class="fn" id="enum_task_4">
+  <h3>虚拟卡枚举</h3>
+  <div class="meta">POST /api/enum/virtualcard/run</div>
+  <div class="row">
+    <label>pattern<input data-input=\"pattern\" type=\"text\" placeholder=\"pattern\" /></label>
+    <label>rules<input data-input=\"rules\" type=\"text\" placeholder=\"rules\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/enum/virtualcard/run\">执行</button></div>
+  <pre class=\"out\" id=\"enum_task_4__out\"></pre>
+</div>
+<div class="fn" id="enum_task_5">
+  <h3>助记词枚举</h3>
+  <div class="meta">POST /api/enum/mnemonic/run</div>
+  <div class="row">
+    <label>wordlist<input data-input=\"wordlist\" type=\"text\" placeholder=\"wordlist\" /></label>
+    <label>constraints<input data-input=\"constraints\" type=\"text\" placeholder=\"constraints\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/enum/mnemonic/run\">执行</button></div>
+  <pre class=\"out\" id=\"enum_task_5__out\"></pre>
+</div>
+<div class="fn" id="enum_task_6">
+  <h3>十六进制密钥枚举</h3>
+  <div class="meta">POST /api/enum/hexkey/run</div>
+  <div class="row">
+    <label>length<input data-input=\"length\" type=\"text\" placeholder=\"length\" /></label>
+    <label>prefix<input data-input=\"prefix\" type=\"text\" placeholder=\"prefix\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/enum/hexkey/run\">执行</button></div>
+  <pre class=\"out\" id=\"enum_task_6__out\"></pre>
+</div>
+<div class="fn" id="enum_task_7">
+  <h3>32位密钥枚举</h3>
+  <div class="meta">POST /api/enum/key32/run</div>
+  <div class="row">
+    <label>charset<input data-input=\"charset\" type=\"text\" placeholder=\"charset\" /></label>
+    <label>rules<input data-input=\"rules\" type=\"text\" placeholder=\"rules\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/enum/key32/run\">执行</button></div>
+  <pre class=\"out\" id=\"enum_task_7__out\"></pre>
+</div>
+<div class="fn" id="enum_task_8">
+  <h3>属性/规则/关键词配置</h3>
+  <div class="meta">POST /api/enum/config/save</div>
+  <div class="row">
+    <label>attributes<input data-input=\"attributes\" type=\"text\" placeholder=\"attributes\" /></label>
+    <label>rules<input data-input=\"rules\" type=\"text\" placeholder=\"rules\" /></label>
+    <label>keywords<input data-input=\"keywords\" type=\"text\" placeholder=\"keywords\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/enum/config/save\">执行</button></div>
+  <pre class=\"out\" id=\"enum_task_8__out\"></pre>
+</div>
+<div class="fn" id="enum_task_9">
+  <h3>交叉联动执行</h3>
+  <div class="meta">POST /api/enum/cross/run</div>
+  <div class="row">
+    <label>task_ids<input data-input=\"task_ids\" type=\"text\" placeholder=\"task_ids\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/enum/cross/run\">执行</button></div>
+  <pre class=\"out\" id=\"enum_task_9__out\"></pre>
+</div>
+<div class="fn" id="enum_task_10">
+  <h3>触发枚举扫描</h3>
+  <div class="meta">POST /api/enum/tasks/scan</div>
+  <div class="row">
+    <label>task_id<input data-input=\"task_id\" type=\"text\" placeholder=\"task_id\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/enum/tasks/scan\">执行</button></div>
+  <pre class=\"out\" id=\"enum_task_10__out\"></pre>
+</div>
+
+    <p style="margin-top:24px"><a href="/pages/index.html">返回首页</a></p>
+  <div class="card" style="margin-top:12px;">
+    <h3>后端脚本模块（统一来源：/api/modules）</h3>
+    <div id="gen-modules" class="grid"></div>
+  </div>
+  <script type="module">
+    import { apiModules, bindQuickActions } from '/static/js/modules.js';
+    async function render(){
+      const list = await apiModules();
+      const host = document.getElementById('gen-modules');
+      if(!host) return; host.innerHTML='';
+      list.forEach(name=>{
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><div style="font-weight:700">${name}</div><div class="meta">脚本</div></div><div style="display:flex;gap:8px"><button class="btn" data-act="run" data-name="${name}">运行</button><button class="btn" data-act="status">状态</button><button class="btn" data-act="curl" data-name="${name}">调用</button></div>`;
+        host.appendChild(card);
+      });
+      bindQuickActions(host);
+    }
+    render();
+  </script>
+</body>
+<script src="/static/js/healthcheck.js"></script>
+</html>

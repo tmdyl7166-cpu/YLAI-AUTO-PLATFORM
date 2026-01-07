@@ -1,0 +1,12 @@
+  <footer class="footer">© 2025 夜灵多功能检测仪 · 前端</footer>
+  <script>
+    // 环境驱动的超时设置（演练按钮等统一读取）
+    window.AP_SHARED = window.AP_SHARED || {};
+    window.AP_SHARED.timeoutMs = Number((document.body.getAttribute('data-timeout')||'')) || Number((window.TIMEOUT_MS||'')) || 15000;
+    // 开发轮询热重载间隔（毫秒），默认 10 秒
+    window.AP_SHARED.autoRefreshMs = Number((window.AUTO_REFRESH_INTERVAL_MS||'')) || 10000;
+  </script>
+  <script type="module" defer src="/static/js/common/minimal.js?v=__ASSET_VERSION__"></script>
+  <script type="module" defer src="/static/js/common/router.js?v=__ASSET_VERSION__"></script>
+  <script type="module" defer src="/static/js/common/autorefresh.js?v=__ASSET_VERSION__"></script>
+  <script type="module" defer src="/static/js/common/topbar.js?v=__ASSET_VERSION__"></script>

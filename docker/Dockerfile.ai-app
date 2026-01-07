@@ -1,0 +1,25 @@
+# syntax=docker/dockerfile:1
+FROM python:3.12-slim AS ai_app
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    APP_ENV=prod
+
+WORKDIR /workspace
+
+# System deps (if needed)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential curl && rm -rf /var/lib/apt/lists/*
+
+# Copy AI app and install deps
+COPY ai-docker/requirements.txt /workspace/ai-docker/requirements.txt
+RUN python -m pip install -U pip wheel setuptools && \
+    python -m pip install -r /workspace/ai-docker/requirements.txt
+
+COPY ai-docker/ /workspace/
+
+# Web console runs on 9001 per app/web_console.py
+EXPOSE 9001
+
+# Default command runs the main loop which also starts web console in a background thread
+CMD ["python", "/workspace/app/main.py"]

@@ -1,0 +1,5 @@
+/* 战损风主题占位：粗糙质感、对比强烈 */
+.page-damage .card{ background:#0a0f1e; border:1px solid rgba(255,0,0,0.2); color:#eee; }
+.page-damage .accent{ color:#ff4d4f; }
+.page-damage .texture{ background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+background-size: 6px 6px; }

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+__HEAD__
+<body>
+  <main id="recognize-root" aria-live="polite" style="opacity:0"></main>
+  <script type="module" src="../../static/js/pages/api-doc-progress.js?v=__ASSET_VERSION__" defer></script>
+__FOOTER__
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+__HEAD__
+<body>
+  <main id="recognize-root" aria-live="polite" style="opacity:0"></main>
+  <script type="module" src="../../static/js/pages/api-doc-progress.js?v=__ASSET_VERSION__" defer></script>
+__FOOTER__
+</body>
+</html>
+</div>
+<div class="fn" id="recognize_task_2">
+  <h3>识别状态</h3>
+  <div class="meta">POST /api/recognize/tasks/status</div>
+  <div class="row">
+    <label>task_id<input data-input=\"task_id\" type=\"text\" placeholder=\"task_id\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/recognize/tasks/status\">执行</button></div>
+  <pre class=\"out\" id=\"recognize_task_2__out\"></pre>
+</div>
+<div class="fn" id="recognize_task_3">
+  <h3>路由追踪与位置分析</h3>
+  <div class="meta">POST /api/recognize/trace</div>
+  <div class="row">
+    <label>ip<input data-input=\"ip\" type=\"text\" placeholder=\"ip\" /></label>
+    <label>domain<input data-input=\"domain\" type=\"text\" placeholder=\"domain\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/recognize/trace\">执行</button></div>
+  <pre class=\"out\" id=\"recognize_task_3__out\"></pre>
+</div>
+<div class="fn" id="recognize_task_4">
+  <h3>DNS/ASN信息查询</h3>
+  <div class="meta">POST /api/recognize/dns_asn</div>
+  <div class="row">
+    <label>domain<input data-input=\"domain\" type=\"text\" placeholder=\"domain\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/recognize/dns_asn\">执行</button></div>
+  <pre class=\"out\" id=\"recognize_task_4__out\"></pre>
+</div>
+<div class="fn" id="recognize_task_5">
+  <h3>组织名与关联实体查询</h3>
+  <div class="meta">POST /api/recognize/entities</div>
+  <div class="row">
+    <label>name<input data-input=\"name\" type=\"text\" placeholder=\"name\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/recognize/entities\">执行</button></div>
+  <pre class=\"out\" id=\"recognize_task_5__out\"></pre>
+</div>
+<div class="fn" id="recognize_task_6">
+  <h3>社交媒体链接聚合</h3>
+  <div class="meta">POST /api/recognize/social</div>
+  <div class="row">
+    <label>keyword<input data-input=\"keyword\" type=\"text\" placeholder=\"keyword\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/recognize/social\">执行</button></div>
+  <pre class=\"out\" id=\"recognize_task_6__out\"></pre>
+</div>
+<div class="fn" id="recognize_task_7">
+  <h3>跨模块智能协同解析与推理</h3>
+  <div class="meta">POST /api/recognize/coop</div>
+  <div class="row">
+    <label>task_id<input data-input=\"task_id\" type=\"text\" placeholder=\"task_id\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/recognize/coop\">执行</button></div>
+  <pre class=\"out\" id=\"recognize_task_7__out\"></pre>
+</div>
+<div class="fn" id="recognize_task_8">
+  <h3>软件线索聚合</h3>
+  <div class="meta">POST /api/recognize/app_hints</div>
+  <div class="row">
+    <label>apps<input data-input=\"apps\" type=\"text\" placeholder=\"apps\" /></label>
+  </div>
+  <div class=\"actions\"><button class=\"call-btn\" data-method=\"POST\" data-path=\"/api/recognize/app_hints\">执行</button></div>
+  <pre class=\"out\" id=\"recognize_task_8__out\"></pre>
+</div>
+
+    <p style="margin-top:24px"><a href="/pages/index.html">返回首页</a></p>
+  <div class="card" style="margin-top:12px;">
+    <h3>后端脚本模块（统一来源：/api/modules）</h3>
+    <div id="gen-modules" class="grid"></div>
+  </div>
+  <script type="module">
+    import { apiModules, bindQuickActions } from '/static/js/modules.js';
+    async function render(){
+      const list = await apiModules();
+      const host = document.getElementById('gen-modules');
+      if(!host) return; host.innerHTML='';
+      list.forEach(name=>{
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><div style="font-weight:700">${name}</div><div class="meta">脚本</div></div><div style="display:flex;gap:8px"><button class="btn" data-act="run" data-name="${name}">运行</button><button class="btn" data-act="status">状态</button><button class="btn" data-act="curl" data-name="${name}">调用</button></div>`;
+        host.appendChild(card);
+      });
+      bindQuickActions(host);
+    }
+    render();
+  </script>
+</body>
+<script src="/static/js/healthcheck.js"></script>
+</html>

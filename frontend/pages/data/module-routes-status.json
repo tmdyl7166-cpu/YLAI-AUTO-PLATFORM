@@ -1,0 +1,877 @@
+[
+  {
+    "module": "params",
+    "chapter": "1.1 参数部署",
+    "method": "GET",
+    "path": "/api/params/config",
+    "status": "🔴"
+  },
+  {
+    "module": "params",
+    "chapter": "1.1 参数部署",
+    "method": "POST",
+    "path": "/api/params/config",
+    "status": "🔴"
+  },
+  {
+    "module": "params",
+    "chapter": "1.1 参数部署",
+    "method": "POST",
+    "path": "/api/params/validate",
+    "status": "🔴"
+  },
+  {
+    "module": "params",
+    "chapter": "1.1 参数部署",
+    "method": "GET",
+    "path": "/api/params/targets",
+    "status": "🔴"
+  },
+  {
+    "module": "params",
+    "chapter": "1.1 参数部署",
+    "method": "POST",
+    "path": "/api/params/risk-check",
+    "status": "🔴"
+  },
+  {
+    "module": "params",
+    "chapter": "1.1 参数部署",
+    "method": "POST",
+    "path": "/api/params/rank-preview",
+    "status": "🔴"
+  },
+  {
+    "module": "params",
+    "chapter": "1.1 参数部署",
+    "method": "POST",
+    "path": "/api/params/save",
+    "status": "🔴"
+  },
+  {
+    "module": "params",
+    "chapter": "1.1 参数部署",
+    "method": "GET",
+    "path": "/api/params/load",
+    "status": "🔴"
+  },
+  {
+    "module": "params",
+    "chapter": "1.1 参数部署",
+    "method": "GET",
+    "path": "/api/health",
+    "status": "🔴"
+  },
+  {
+    "module": "params",
+    "chapter": "1.1 参数部署",
+    "method": "POST",
+    "path": "/api/events/trigger",
+    "status": "🔴"
+  },
+  {
+    "module": "scheduler",
+    "chapter": "1.2 智能调度",
+    "method": "POST",
+    "path": "/api/scheduler/start",
+    "status": "🔴"
+  },
+  {
+    "module": "scheduler",
+    "chapter": "1.2 智能调度",
+    "method": "POST",
+    "path": "/api/scheduler/stop",
+    "status": "🔴"
+  },
+  {
+    "module": "scheduler",
+    "chapter": "1.2 智能调度",
+    "method": "GET",
+    "path": "/api/scheduler/status",
+    "status": "🔴"
+  },
+  {
+    "module": "scheduler",
+    "chapter": "1.2 智能调度",
+    "method": "POST",
+    "path": "/api/ai/register",
+    "status": "🔴"
+  },
+  {
+    "module": "scheduler",
+    "chapter": "1.2 智能调度",
+    "method": "POST",
+    "path": "/api/ai/pipeline",
+    "status": "🔴"
+  },
+  {
+    "module": "scheduler",
+    "chapter": "1.2 智能调度",
+    "method": "POST",
+    "path": "/api/crawler/dispatch",
+    "status": "🔴"
+  },
+  {
+    "module": "scheduler",
+    "chapter": "1.2 智能调度",
+    "method": "POST",
+    "path": "/api/scheduler/fallback",
+    "status": "🔴"
+  },
+  {
+    "module": "crawler",
+    "chapter": "1.3 采集任务",
+    "method": "GET",
+    "path": "/api/crawler/tasks",
+    "status": "🔴"
+  },
+  {
+    "module": "crawler",
+    "chapter": "1.3 采集任务",
+    "method": "POST",
+    "path": "/api/crawler/tasks",
+    "status": "🔴"
+  },
+  {
+    "module": "crawler",
+    "chapter": "1.3 采集任务",
+    "method": "POST",
+    "path": "/api/crawler/validate",
+    "status": "🔴"
+  },
+  {
+    "module": "crawler",
+    "chapter": "1.3 采集任务",
+    "method": "GET",
+    "path": "/api/crawler/tasks/:id",
+    "status": "🔴"
+  },
+  {
+    "module": "crawler",
+    "chapter": "1.3 采集任务",
+    "method": "POST",
+    "path": "/api/crawler/tasks/:id/start",
+    "status": "🔴"
+  },
+  {
+    "module": "crawler",
+    "chapter": "1.3 采集任务",
+    "method": "POST",
+    "path": "/api/crawler/tasks/:id/stop",
+    "status": "🔴"
+  },
+  {
+    "module": "enum",
+    "chapter": "1.4 枚举任务",
+    "method": "GET",
+    "path": "/api/enum/tasks",
+    "status": "🔴"
+  },
+  {
+    "module": "enum",
+    "chapter": "1.4 枚举任务",
+    "method": "POST",
+    "path": "/api/enum/bin-check",
+    "status": "🔴"
+  },
+  {
+    "module": "enum",
+    "chapter": "1.4 枚举任务",
+    "method": "POST",
+    "path": "/api/enum/game-card",
+    "status": "🔴"
+  },
+  {
+    "module": "enum",
+    "chapter": "1.4 枚举任务",
+    "method": "POST",
+    "path": "/api/enum/virtual-card",
+    "status": "🔴"
+  },
+  {
+    "module": "enum",
+    "chapter": "1.4 枚举任务",
+    "method": "POST",
+    "path": "/api/enum/mnemonic",
+    "status": "🔴"
+  },
+  {
+    "module": "enum",
+    "chapter": "1.4 枚举任务",
+    "method": "POST",
+    "path": "/api/enum/hex-key",
+    "status": "🔴"
+  },
+  {
+    "module": "enum",
+    "chapter": "1.4 枚举任务",
+    "method": "POST",
+    "path": "/api/enum/key32",
+    "status": "🔴"
+  },
+  {
+    "module": "enum",
+    "chapter": "1.4 枚举任务",
+    "method": "POST",
+    "path": "/api/enum/config",
+    "status": "🔴"
+  },
+  {
+    "module": "enum",
+    "chapter": "1.4 枚举任务",
+    "method": "POST",
+    "path": "/api/enum/cross-run",
+    "status": "🔴"
+  },
+  {
+    "module": "enum",
+    "chapter": "1.4 枚举任务",
+    "method": "POST",
+    "path": "/api/enum/scan",
+    "status": "🔴"
+  },
+  {
+    "module": "recognize",
+    "chapter": "1.5 识别任务",
+    "method": "POST",
+    "path": "/api/recognize/submit",
+    "status": "🔴"
+  },
+  {
+    "module": "recognize",
+    "chapter": "1.5 识别任务",
+    "method": "GET",
+    "path": "/api/recognize/status/:id",
+    "status": "🔴"
+  },
+  {
+    "module": "recognize",
+    "chapter": "1.5 识别任务",
+    "method": "GET",
+    "path": "/api/netinfo",
+    "status": "🔴"
+  },
+  {
+    "module": "recognize",
+    "chapter": "1.5 识别任务",
+    "method": "GET",
+    "path": "/api/org/lookup",
+    "status": "🔴"
+  },
+  {
+    "module": "recognize",
+    "chapter": "1.5 识别任务",
+    "method": "GET",
+    "path": "/api/social/aggregate",
+    "status": "🔴"
+  },
+  {
+    "module": "recognize",
+    "chapter": "1.5 识别任务",
+    "method": "GET",
+    "path": "/api/clue/aggregate",
+    "status": "🔴"
+  },
+  {
+    "module": "crack",
+    "chapter": "1.6 破解任务",
+    "method": "POST",
+    "path": "/api/crack/url",
+    "status": "🔴"
+  },
+  {
+    "module": "crack",
+    "chapter": "1.6 破解任务",
+    "method": "POST",
+    "path": "/api/crack/parse",
+    "status": "🔴"
+  },
+  {
+    "module": "crack",
+    "chapter": "1.6 破解任务",
+    "method": "POST",
+    "path": "/api/crack/webparse",
+    "status": "🔴"
+  },
+  {
+    "module": "crack",
+    "chapter": "1.6 破解任务",
+    "method": "POST",
+    "path": "/api/crack/app-login",
+    "status": "🔴"
+  },
+  {
+    "module": "crack",
+    "chapter": "1.6 破解任务",
+    "method": "POST",
+    "path": "/api/crack/defense",
+    "status": "🔴"
+  },
+  {
+    "module": "crack",
+    "chapter": "1.6 破解任务",
+    "method": "POST",
+    "path": "/api/crack/android",
+    "status": "🔴"
+  },
+  {
+    "module": "crack",
+    "chapter": "1.6 破解任务",
+    "method": "POST",
+    "path": "/api/crack/card",
+    "status": "🔴"
+  },
+  {
+    "module": "crack",
+    "chapter": "1.6 破解任务",
+    "method": "POST",
+    "path": "/api/crack/base64",
+    "status": "🔴"
+  },
+  {
+    "module": "crack",
+    "chapter": "1.6 破解任务",
+    "method": "POST",
+    "path": "/api/crack/denoise",
+    "status": "🔴"
+  },
+  {
+    "module": "crack",
+    "chapter": "1.6 破解任务",
+    "method": "GET",
+    "path": "/api/crack/tasks/:id/status",
+    "status": "🔴"
+  },
+  {
+    "module": "auto",
+    "chapter": "1.7 自动化状态",
+    "method": "GET",
+    "path": "/api/auto/overview",
+    "status": "🔴"
+  },
+  {
+    "module": "auto",
+    "chapter": "1.7 自动化状态",
+    "method": "GET",
+    "path": "/api/auto/progress",
+    "status": "🔴"
+  },
+  {
+    "module": "auto",
+    "chapter": "1.7 自动化状态",
+    "method": "GET",
+    "path": "/api/auto/security-levels",
+    "status": "🔴"
+  },
+  {
+    "module": "auto",
+    "chapter": "1.7 自动化状态",
+    "method": "POST",
+    "path": "/api/auto/keyword-strategy",
+    "status": "🔴"
+  },
+  {
+    "module": "auto",
+    "chapter": "1.7 自动化状态",
+    "method": "POST",
+    "path": "/api/auto/fast-task",
+    "status": "🔴"
+  },
+  {
+    "module": "auto",
+    "chapter": "1.7 自动化状态",
+    "method": "POST",
+    "path": "/api/auto/captcha",
+    "status": "🔴"
+  },
+  {
+    "module": "auto",
+    "chapter": "1.7 自动化状态",
+    "method": "POST",
+    "path": "/api/auto/collect",
+    "status": "🔴"
+  },
+  {
+    "module": "auto",
+    "chapter": "1.7 自动化状态",
+    "method": "POST",
+    "path": "/api/auto/switch-strategy",
+    "status": "🔴"
+  },
+  {
+    "module": "auto",
+    "chapter": "1.7 自动化状态",
+    "method": "GET",
+    "path": "/api/auto/bypass-progress",
+    "status": "🔴"
+  },
+  {
+    "module": "logs",
+    "chapter": "1.8 日志管理",
+    "method": "GET",
+    "path": "/api/logs/deploy",
+    "status": "🔴"
+  },
+  {
+    "module": "logs",
+    "chapter": "1.8 日志管理",
+    "method": "GET",
+    "path": "/api/logs/install",
+    "status": "🔴"
+  },
+  {
+    "module": "logs",
+    "chapter": "1.8 日志管理",
+    "method": "GET",
+    "path": "/api/logs/ip-login",
+    "status": "🔴"
+  },
+  {
+    "module": "logs",
+    "chapter": "1.8 日志管理",
+    "method": "GET",
+    "path": "/api/logs/usage",
+    "status": "🔴"
+  },
+  {
+    "module": "logs",
+    "chapter": "1.8 日志管理",
+    "method": "POST",
+    "path": "/api/logs/cleanup",
+    "status": "🔴"
+  },
+  {
+    "module": "workflow",
+    "chapter": "1.9 工作流部署",
+    "method": "POST",
+    "path": "/api/workflow/deploy",
+    "status": "🔴"
+  },
+  {
+    "module": "workflow",
+    "chapter": "1.9 工作流部署",
+    "method": "POST",
+    "path": "/api/workflow/run/basic1",
+    "status": "🔴"
+  },
+  {
+    "module": "workflow",
+    "chapter": "1.9 工作流部署",
+    "method": "POST",
+    "path": "/api/workflow/run/basic2",
+    "status": "🔴"
+  },
+  {
+    "module": "workflow",
+    "chapter": "1.9 工作流部署",
+    "method": "POST",
+    "path": "/api/workflow/run/basic3",
+    "status": "🔴"
+  },
+  {
+    "module": "workflow",
+    "chapter": "1.9 工作流部署",
+    "method": "POST",
+    "path": "/api/workflow/override",
+    "status": "🔴"
+  },
+  {
+    "module": "workflow",
+    "chapter": "1.9 工作流部署",
+    "method": "POST",
+    "path": "/api/workflow/run/advanced",
+    "status": "🔴"
+  },
+  {
+    "module": "ai",
+    "chapter": "AI识别与训练",
+    "method": "POST",
+    "path": "/api/ai/archive-failures",
+    "status": "🔴"
+  },
+  {
+    "module": "ai",
+    "chapter": "AI识别与训练",
+    "method": "POST",
+    "path": "/api/ai/analyze-failures",
+    "status": "🔴"
+  },
+  {
+    "module": "ai",
+    "chapter": "AI识别与训练",
+    "method": "POST",
+    "path": "/api/ai/train",
+    "status": "🔴"
+  },
+  {
+    "module": "ai",
+    "chapter": "AI识别与训练",
+    "method": "POST",
+    "path": "/api/ai/update",
+    "status": "🔴"
+  },
+  {
+    "module": "ai",
+    "chapter": "AI识别与训练",
+    "method": "POST",
+    "path": "/api/ai/predict",
+    "status": "🔴"
+  },
+  {
+    "module": "ai",
+    "chapter": "AI识别与训练",
+    "method": "GET",
+    "path": "/api/ai/service/health",
+    "status": "🔴"
+  },
+  {
+    "module": "ai",
+    "chapter": "AI识别与训练",
+    "method": "POST",
+    "path": "/api/ai/service/toggle",
+    "status": "🔴"
+  },
+  {
+    "module": "ai",
+    "chapter": "AI识别与训练",
+    "method": "GET",
+    "path": "/api/ai/versions",
+    "status": "🔴"
+  },
+  {
+    "module": "ai",
+    "chapter": "AI识别与训练",
+    "method": "GET",
+    "path": "/api/ai/metrics",
+    "status": "🔴"
+  },
+  {
+    "module": "ai",
+    "chapter": "AI识别与训练",
+    "method": "POST",
+    "path": "/api/ai/rollback",
+    "status": "🔴"
+  },
+  {
+    "module": "ai",
+    "chapter": "AI识别与训练",
+    "method": "POST",
+    "path": "/api/ai/ensemble",
+    "status": "🔴"
+  },
+  {
+    "module": "ai",
+    "chapter": "AI识别与训练",
+    "method": "POST",
+    "path": "/api/ai/logs/archive",
+    "status": "🔴"
+  },
+  {
+    "module": "ai",
+    "chapter": "AI识别与训练",
+    "method": "POST",
+    "path": "/api/ai/evaluate-switch",
+    "status": "🔴"
+  },
+  {
+    "module": "ai",
+    "chapter": "AI识别与训练",
+    "method": "POST",
+    "path": "/api/ai/self-heal",
+    "status": "🔴"
+  },
+  {
+    "module": "ai",
+    "chapter": "AI识别与训练",
+    "method": "POST",
+    "path": "/api/ai/autogen/script",
+    "status": "🔴"
+  },
+  {
+    "module": "xparse",
+    "chapter": "交叉解析",
+    "method": "POST",
+    "path": "/api/xparse/tasks",
+    "status": "🔴"
+  },
+  {
+    "module": "xparse",
+    "chapter": "交叉解析",
+    "method": "POST",
+    "path": "/api/xparse/run/:id",
+    "status": "🔴"
+  },
+  {
+    "module": "xparse",
+    "chapter": "交叉解析",
+    "method": "GET",
+    "path": "/api/xparse/status/:id",
+    "status": "🔴"
+  },
+  {
+    "module": "xparse",
+    "chapter": "交叉解析",
+    "method": "GET",
+    "path": "/api/xparse/result/:id",
+    "status": "🔴"
+  },
+  {
+    "module": "anti",
+    "chapter": "反追反穿",
+    "method": "POST",
+    "path": "/api/anti/trace/config",
+    "status": "🔴"
+  },
+  {
+    "module": "anti",
+    "chapter": "反追反穿",
+    "method": "POST",
+    "path": "/api/anti/bypass/toggle",
+    "status": "🔴"
+  },
+  {
+    "module": "anti",
+    "chapter": "反追反穿",
+    "method": "POST",
+    "path": "/api/anti/trace/run",
+    "status": "🔴"
+  },
+  {
+    "module": "anti",
+    "chapter": "反追反穿",
+    "method": "GET",
+    "path": "/api/anti/trace/evaluate",
+    "status": "🔴"
+  },
+  {
+    "module": "limit",
+    "chapter": "极限突破",
+    "method": "POST",
+    "path": "/api/limit/override/config",
+    "status": "🔴"
+  },
+  {
+    "module": "limit",
+    "chapter": "极限突破",
+    "method": "POST",
+    "path": "/api/limit/override/toggle",
+    "status": "🔴"
+  },
+  {
+    "module": "limit",
+    "chapter": "极限突破",
+    "method": "POST",
+    "path": "/api/limit/override/run",
+    "status": "🔴"
+  },
+  {
+    "module": "limit",
+    "chapter": "极限突破",
+    "method": "GET",
+    "path": "/api/limit/override/report/:id",
+    "status": "🔴"
+  },
+  {
+    "module": "challenge",
+    "chapter": "破译挑战",
+    "method": "POST",
+    "path": "/api/challenge/create",
+    "status": "🔴"
+  },
+  {
+    "module": "challenge",
+    "chapter": "破译挑战",
+    "method": "POST",
+    "path": "/api/challenge/run/:id",
+    "status": "🔴"
+  },
+  {
+    "module": "challenge",
+    "chapter": "破译挑战",
+    "method": "GET",
+    "path": "/api/challenge/status/:id",
+    "status": "🔴"
+  },
+  {
+    "module": "challenge",
+    "chapter": "破译挑战",
+    "method": "GET",
+    "path": "/api/challenge/report/:id",
+    "status": "🔴"
+  },
+  {
+    "module": "system",
+    "chapter": "系统设置",
+    "method": "GET",
+    "path": "/api/system/settings",
+    "status": "🔴"
+  },
+  {
+    "module": "system",
+    "chapter": "系统设置",
+    "method": "POST",
+    "path": "/api/system/settings",
+    "status": "🔴"
+  },
+  {
+    "module": "system",
+    "chapter": "系统设置",
+    "method": "GET",
+    "path": "/api/system/health",
+    "status": "🔴"
+  },
+  {
+    "module": "system",
+    "chapter": "系统设置",
+    "method": "POST",
+    "path": "/api/system/backup",
+    "status": "🔴"
+  },
+  {
+    "module": "system",
+    "chapter": "系统设置",
+    "method": "POST",
+    "path": "/api/system/restore",
+    "status": "🔴"
+  },
+  {
+    "module": "rbac",
+    "chapter": "权限管理",
+    "method": "GET",
+    "path": "/api/rbac/users",
+    "status": "🔴"
+  },
+  {
+    "module": "rbac",
+    "chapter": "权限管理",
+    "method": "GET",
+    "path": "/api/rbac/roles",
+    "status": "🔴"
+  },
+  {
+    "module": "rbac",
+    "chapter": "权限管理",
+    "method": "GET",
+    "path": "/api/rbac/policies",
+    "status": "🔴"
+  },
+  {
+    "module": "rbac",
+    "chapter": "权限管理",
+    "method": "POST",
+    "path": "/api/rbac/bind-role",
+    "status": "🔴"
+  },
+  {
+    "module": "rbac",
+    "chapter": "权限管理",
+    "method": "POST",
+    "path": "/api/rbac/bind-policy",
+    "status": "🔴"
+  },
+  {
+    "module": "docs",
+    "chapter": "API 接口文档",
+    "method": "GET",
+    "path": "/api/docs/spec",
+    "status": "🔴"
+  },
+  {
+    "module": "docs",
+    "chapter": "API 接口文档",
+    "method": "POST",
+    "path": "/api/docs/sync",
+    "status": "🔴"
+  },
+  {
+    "module": "docs",
+    "chapter": "API 接口文档",
+    "method": "GET",
+    "path": "/api/docs/health",
+    "status": "🔴"
+  },
+  {
+    "module": "backend",
+    "chapter": "后端控制",
+    "method": "POST",
+    "path": "/api/backend/toggle",
+    "status": "🔴"
+  },
+  {
+    "module": "backend",
+    "chapter": "后端控制",
+    "method": "GET",
+    "path": "/api/backend/status",
+    "status": "🔴"
+  },
+  {
+    "module": "backend",
+    "chapter": "后端控制",
+    "method": "GET",
+    "path": "/api/backend/logs",
+    "status": "🔴"
+  },
+  {
+    "module": "train",
+    "chapter": "AI 训练",
+    "method": "POST",
+    "path": "/api/train/tasks",
+    "status": "🔴"
+  },
+  {
+    "module": "train",
+    "chapter": "AI 训练",
+    "method": "POST",
+    "path": "/api/train/run/:id",
+    "status": "🔴"
+  },
+  {
+    "module": "train",
+    "chapter": "AI 训练",
+    "method": "GET",
+    "path": "/api/train/status/:id",
+    "status": "🔴"
+  },
+  {
+    "module": "train",
+    "chapter": "AI 训练",
+    "method": "GET",
+    "path": "/api/train/eval/:id",
+    "status": "🔴"
+  },
+  {
+    "module": "fastapi",
+    "chapter": "FastAPI 服务联动",
+    "method": "POST",
+    "path": "/api/fastapi/register",
+    "status": "🔴"
+  },
+  {
+    "module": "fastapi",
+    "chapter": "FastAPI 服务联动",
+    "method": "POST",
+    "path": "/api/fastapi/pipeline",
+    "status": "🔴"
+  },
+  {
+    "module": "fastapi",
+    "chapter": "FastAPI 服务联动",
+    "method": "GET",
+    "path": "/api/fastapi/health",
+    "status": "🔴"
+  },
+  {
+    "module": "fastapi",
+    "chapter": "FastAPI 服务联动",
+    "method": "POST",
+    "path": "/api/run",
+    "status": "🔴"
+  },
+  {
+    "module": "fastapi",
+    "chapter": "FastAPI 服务联动",
+    "method": "POST",
+    "path": "/api/run",
+    "status": "🔴"
+  }
+]

@@ -1,0 +1,57 @@
+{
+  "frontend": {
+    "index": "./frontend/pages/index.html",
+    "apiDoc": "./frontend/pages/api-doc.html",
+    "run": "./frontend/pages/run.html",
+    "monitor": "./frontend/pages/monitor.html",
+    "aiDemo": "./frontend/pages/ai-demo.html",
+    "dag": "./frontend/pages/visual_pipeline.html",
+    "rbac": "./frontend/pages/rbac.html",
+    "staticJs": "./frontend/static/js/",
+    "staticCss": "./frontend/static/css/",
+    "modulesJs": "./frontend/static/js/modules/",
+    "modulesCss": "./frontend/static/css/modules/",
+    "modulesRegistry": "./frontend/static/js/modules/registry.js"
+  },
+  "backend": {
+    "devEntry": "./backend/app.py",
+    "prodEntry": "./backend/main.py",
+    "apiBase": "/api",
+    "wsBase": "/ws",
+    "health": "/health",
+    "status": "/api/status",
+    "authLogin": "/api/auth/login",
+    "rbac": "/api/security/rbac",
+    "generate": "/api/generate",
+    "pipelineRun": "/api/pipeline/run",
+    "pipelineValidate": "/api/pipeline/validate",
+    "schedulerConfig": "/api/scheduler/config",
+    "monitorWS": "/ws/monitor",
+    "pipelineWS": "/ws/pipeline/{task_id}"
+  },
+  "docker": {
+    "compose": "./docker/docker-compose.yml",
+    "apiDockerfile": "./docker/api.Dockerfile",
+    "webDockerfile": "./docker/nginx.Dockerfile",
+    "aiAppDockerfile": "./ai-docker/Dockerfile"
+  },
+  "docs": {
+    "overview": "./docs/OVERVIEW.md",
+    "status": "./docs/PROJECT_STATUS.md",
+    "backendCore": "./docs/BACKEND_CORE.md",
+    "apiFull": "./docs/API_FULL.md",
+    "authRbac": "./docs/AUTH_RBAC.md",
+    "dagPipeline": "./docs/DAG_PIPELINE.md",
+    "aiScheduler": "./docs/AI_SCHEDULER.md",
+    "monitorWS": "./docs/MONITOR_WS.md",
+    "deployGuide": "./docs/DEPLOY_GUIDE.md",
+    "securityRisk": "./docs/SECURITY_RISK.md",
+    "frontendPages": "./docs/FRONTEND_PAGES.md",
+    "featureMap": "./docs/FEATURE_MAP.md",
+    "scriptsGuide": "./docs/SCRIPTS_GUIDE.md",
+    "mappingDoc": "./docs/统一接口映射表.md"
+  },
+  "policy": {
+    "modulesPolicy": "./modules_policy.json"
+  }
+}

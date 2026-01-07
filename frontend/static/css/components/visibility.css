@@ -1,0 +1,18 @@
+/* 通用可见性与暗色主题辅助类 */
+
+/* 页面初始隐藏以避免闪烁，由 JS 渲染后移除该类 */
+.hidden-initial html,
+.hidden-initial body {
+  visibility: hidden;
+}
+
+/* 暗色机械风背景与前景色 */
+.page-dark {
+  background: #0b0f14;
+  color: #e5e7eb;
+}
+
+/* 初始透明以待渲染完成后显示 */
+.page-fade-in {
+  opacity: 0.01; /* 避免全黑，公共模块与入口脚本将提升至 1 */
+}

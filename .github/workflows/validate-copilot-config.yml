@@ -1,0 +1,116 @@
+name: Validate Copilot Config
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Validate JSON syntax
+        run: |
+          python3 -m json.tool .github/.copilot-config.json > /dev/null
+
+      - name: Check gitc.md and external rules file
+        run: |
+          python3 - << 'PY'
+          import json, os, re
+
+          cfg_path = ".github/.copilot-config.json"
+          gitc_path = "gitc.md"
+          logs_dir = ".github/logs"
+
+          def log(msg):
+            print(msg)
+
+          if not os.path.exists(gitc_path):
+            log("E002 gitc.md not found at project root; fallback to internal absolute rules")
+            external_file = ""
+            final_source = "internal_absolute"
+            fallback_reason = "gitc.md_missing"
+            gitc = ""
+          else:
+            with open(gitc_path, 'r', encoding='utf-8') as f:
+              gitc = f.read()
+            match = re.search(r'"external_rules_file"\s*:\s*"([^"]*)"', gitc)
+            external_file = match.group(1).strip() if match else ""
+            final_source = "gitc+internal"
+            fallback_reason = None
+
+          def parse_list(m):
+            if not m:
+              return []
+            items = [i.strip().strip('`"\'"'') for i in m.group(1).split(',') if i.strip()]
+            return items
+
+          include_match = re.search(r'"include"\s*:\s*\[(.*?)\]', gitc, re.S)
+          exclude_match = re.search(r'"exclude"\s*:\s*\[(.*?)\]', gitc, re.S)
+          gitc_include = parse_list(include_match)
+          gitc_exclude = parse_list(exclude_match)
+
+          if external_file:
+            filename = os.path.basename(external_file)
+            if not filename.lower().startswith('yl'):
+              log(f"E004 external_rules_file must start with YL/yl: {filename}")
+              fallback_reason = "invalid_name"
+              external_file = ""
+            elif '/' in external_file or '\\' in external_file:
+              log("E005 external_rules_file must be at project root (same level as .github/)")
+              fallback_reason = "invalid_location"
+              external_file = ""
+            elif not os.path.exists(external_file):
+              log(f"E002 external_rules_file not found: {external_file}")
+              fallback_reason = "missing_file"
+              external_file = ""
+            else:
+              try:
+                with open(external_file, 'r', encoding='utf-8') as f:
+                  json.load(f)
+                final_source = "external"
+                log(f"I005 External rules file valid: {external_file}")
+              except json.JSONDecodeError as e:
+                log(f"E003 external_rules_file JSON error: {e}")
+                fallback_reason = "invalid_json"
+                external_file = ""
+
+          if not external_file and final_source != "external":
+            final_source = "internal_absolute"
+            if fallback_reason is None:
+              fallback_reason = "not_configured"
+            log("Using .github/.copilot-config.json as absolute rules (fallback)")
+          elif final_source == "external":
+            fallback_reason = None
+
+          effective = {
+            "rules_source": final_source,
+            "external_rules_file": external_file if external_file else None,
+            "validation_passed": final_source == "external",
+            "fallback_reason": fallback_reason,
+            "paths_include_exclude": {
+              "include": gitc_include,
+              "exclude": gitc_exclude
+            }
+          }
+
+          os.makedirs(logs_dir, exist_ok=True)
+          with open(os.path.join(logs_dir, "calc-effective-rules.json"), 'w', encoding='utf-8') as f:
+            json.dump(effective, f, ensure_ascii=False, indent=2)
+          log("✅ Saved effective rules to .github/logs/calc-effective-rules.json")
+
+          PY
+
+      - name: Store validation logs
+        run: |
+          mkdir -p .github/logs
+          echo "Copilot config validated on $(date -u)" >> .github/logs/validation.log

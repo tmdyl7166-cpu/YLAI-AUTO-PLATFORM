@@ -1,0 +1,2 @@
+[boot] monitor placeholder log initialized
+[info] 欢迎使用后端控制台（占位日志）

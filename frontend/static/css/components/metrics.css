@@ -1,0 +1,28 @@
+/* KPI badges and module grid */
+.kpi {
+  background: #11151a;
+  border: 1px solid rgba(29,240,255,0.12);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(140px, 1fr));
+  gap: 8px;
+}
+.module-item {
+  background: #0d0f12;
+  border: 1px solid rgba(29,240,255,0.12);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.chart-placeholder {
+  height: 160px;
+  background: #0b0d10;
+  border: 1px dashed rgba(29,240,255,0.2);
+  border-radius: 8px;
+}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>监控面板 - YLAI-AUTO-PLATFORM</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { background: #f0f0f0; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .metric-card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; background: white; }
+        .metric-card h3 { margin-top: 0; color: #333; }
+        .metric-value { font-size: 2em; font-weight: bold; color: #007bff; }
+        .status-good { color: green; }
+        .status-warning { color: orange; }
+        .status-error { color: red; }
+        .chart-placeholder { height: 200px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #666; }
+        .back-link { margin-top: 20px; }
+        .back-link a { color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>系统监控面板</h1>
+            <p>实时监控系统状态、性能和健康指标</p>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <h3>系统健康状态</h3>
+                <div class="metric-value status-good">正常</div>
+                <p>所有服务运行正常</p>
+            </div>
+
+            <div class="metric-card">
+                <h3>CPU 使用率</h3>
+                <div class="metric-value">45%</div>
+                <div class="chart-placeholder">CPU 使用率图表</div>
+            </div>
+
+            <div class="metric-card">
+                <h3>内存使用率</h3>
+                <div class="metric-value">67%</div>
+                <div class="chart-placeholder">内存使用率图表</div>
+            </div>
+
+            <div class="metric-card">
+                <h3>活跃任务数</h3>
+                <div class="metric-value">12</div>
+                <p>当前运行的任务数量</p>
+            </div>
+
+            <div class="metric-card">
+                <h3>网络连接数</h3>
+                <div class="metric-value">156</div>
+                <div class="chart-placeholder">网络连接图表</div>
+            </div>
+
+            <div class="metric-card">
+                <h3>AI 模型状态</h3>
+                <div class="metric-value status-good">已加载</div>
+                <p>AI 模型运行正常</p>
+            </div>
+        </div>
+
+        <div class="metrics-grid" style="margin-top: 20px;">
+            <div class="metric-card" style="grid-column: span 2;">
+                <h3>系统日志</h3>
+                <div style="height: 300px; overflow-y: auto; background: #f8f9fa; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: monospace; font-size: 12px;">
+                    <div>13:45:01 INFO - 系统启动完成</div>
+                    <div>13:45:02 INFO - AI模块初始化成功</div>
+                    <div>13:45:03 INFO - 数据库连接池建立</div>
+                    <div>13:45:04 INFO - 监控服务启动</div>
+                    <div>13:45:05 INFO - 数据采集任务开始</div>
+                    <div>13:45:06 INFO - AI训练任务启动</div>
+                    <div>13:45:07 INFO - 网络连接数: 156</div>
+                    <div>13:45:08 INFO - CPU使用率: 45%</div>
+                    <div>13:45:09 INFO - 内存使用率: 67%</div>
+                    <div>13:45:10 INFO - 健康检查通过</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="/pages/index.html">← 返回主页</a>
+        </div>
+    </div>
+</body>
+</html>

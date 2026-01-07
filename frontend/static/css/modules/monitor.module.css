@@ -1,0 +1,3 @@
+/* Monitor page module styles */
+.monitor-grid{display:grid;gap:12px}
+.chart{min-height:160px}

@@ -1,0 +1,1 @@
+# Collectors service package

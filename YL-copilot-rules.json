@@ -1,0 +1,461 @@
+{
+  "metadata": {
+    "name": "YLAI-AUTO-PLATFORM Copilot Rules",
+    "version": "1.0.0",
+    "schemaVersion": "1.0.0",
+    "type": "external-copilot-rules",
+    "description": "针对 YLAI-AUTO-PLATFORM 项目的定制 Copilot 规则，基于企业级自动化爬虫平台架构",
+    "author": "AI System",
+    "created": "2025-12-20",
+    "projectType": "enterprise-crawler-platform",
+    "portable": false,
+    "selfDiscovery": true
+  },
+
+  "projectOverview": {
+    "name": "YLAI-AUTO-PLATFORM",
+    "type": "企业级自动化爬虫平台",
+    "architecture": "统一内核 + 节点化API路由 + 脚本注册系统",
+    "technologies": {
+      "backend": "Python 3.11+ FastAPI",
+      "frontend": "Vue.js 3 + Pinia",
+      "deployment": "Docker Compose",
+      "communication": "WebSocket + REST API",
+      "ai": "本地AI模型集成"
+    },
+    "keyPatterns": [
+      "脚本自动注册 (@registry.register)",
+      "权限检查 (require_perm)",
+      "节点化路由 (/api/node.*)",
+      "配置层次 (function_registry → modules_policy → core_pointers)"
+    ]
+  },
+
+  "languageRules": {
+    "python": {
+      "enabled": true,
+      "priority": 10,
+      "filePatterns": ["*.py"],
+      "entryPoints": ["backend/app.py", "backend/main.py", "scripts/*.py"],
+      "configFiles": ["backend/requirements.txt", "pyproject.toml"],
+      "conventions": {
+        "naming": "snake_case",
+        "indentation": 4,
+        "maxLineLength": 100,
+        "docstringFormat": "Google",
+        "imports": "absolute_preferred"
+      },
+      "analysisRules": {
+        "scriptRegistration": {
+          "pattern": "@registry.register(\"unique_name\")",
+          "required": true,
+          "description": "所有脚本必须使用注册装饰器"
+        },
+        "permissionGuards": {
+          "pattern": "require_perm(\"module:action\")",
+          "required": true,
+          "description": "API端点必须添加权限检查"
+        },
+        "asyncPatterns": {
+          "fastapiRoutes": true,
+          "websocketHandlers": true
+        },
+        "errorHandling": "structured_responses"
+      },
+      "projectSpecific": {
+        "registrySystem": "backend/core/registry.py",
+        "apiRouter": "backend/app.py",
+        "permissionSystem": "backend/api/auth.py"
+      }
+    },
+    "javascript": {
+      "enabled": true,
+      "priority": 9,
+      "filePatterns": ["*.js"],
+      "entryPoints": ["frontend/dev-server.js", "frontend/server.js"],
+      "configFiles": ["frontend/package.json", "frontend/vite.config.js"],
+      "conventions": {
+        "naming": "camelCase",
+        "indentation": 2,
+        "maxLineLength": 100,
+        "quoteStyle": "double",
+        "semicolons": true
+      },
+      "analysisRules": {
+        "vueCompositionApi": true,
+        "piniaStores": true,
+        "fetchApiCalls": true,
+        "hashRouting": true
+      },
+      "projectSpecific": {
+        "vueApp": "frontend/static/js/app.js",
+        "apiClient": "frontend/backend-mock.js",
+        "stateManagement": "frontend/static/js/stores/"
+      }
+    },
+    "typescript": {
+      "enabled": false,
+      "note": "项目主要使用JavaScript，TypeScript可选"
+    },
+    "shell": {
+      "enabled": true,
+      "priority": 8,
+      "filePatterns": ["*.sh"],
+      "entryPoints": ["start.sh", "dev-start.sh"],
+      "conventions": {
+        "naming": "snake_case",
+        "indentation": 2,
+        "strictMode": "set -e",
+        "errorHandling": true
+      },
+      "analysisRules": {
+        "deploymentScripts": true,
+        "environmentChecks": true
+      },
+      "projectSpecific": {
+        "mainDeployment": "start.sh",
+        "developmentSetup": "scripts/dev_stack.sh"
+      }
+    },
+    "json": {
+      "enabled": true,
+      "priority": 7,
+      "filePatterns": ["*.json"],
+      "conventions": {
+        "indentation": 2,
+        "trailingCommas": false
+      },
+      "analysisRules": {
+        "configValidation": true,
+        "schemaCompliance": true
+      },
+      "projectSpecific": {
+        "functionRegistry": "YL-copilot-rules.json#/functionRegistry",
+        "permissionPolicy": "config/modules_policy.json",
+        "corePointers": "config/核心指向.json"
+      }
+    },
+    "markdown": {
+      "enabled": true,
+      "priority": 6,
+      "filePatterns": ["*.md"],
+      "conventions": {
+        "chinesePreferred": true,
+        "codeBlocks": "fenced",
+        "tableFormat": "github"
+      },
+      "analysisRules": {
+        "documentationCompleteness": true,
+        "apiContractUpdates": true
+      }
+    }
+  },
+
+  "projectDiscovery": {
+    "enabled": true,
+    "scanDepth": "unlimited",
+    "rootMarkers": ["start.sh", "backend/app.py", "frontend/package.json", ".github/gitc.md"],
+    "patterns": {
+      "directories": [
+        "backend", "frontend", "scripts", "config", "docs", "docker", "pia", "ai-docker",
+        "极限部署清单", "logs"
+      ],
+      "configFiles": [
+        "YL-copilot-rules.json",
+        "config/modules_policy.json",
+        "config/核心指向.json",
+        "config/规则.md",
+        "backend/requirements.txt",
+        "frontend/package.json",
+        "docker/docker-compose.yml"
+      ],
+      "entryPoints": [
+        "start.sh",
+        "backend/app.py",
+        "frontend/dev-server.js",
+        "scripts/hx.py"
+      ]
+    },
+    "architectureDetection": {
+      "unifiedKernel": true,
+      "nodeBasedRouting": "/api/node.*",
+      "scriptRegistry": "@registry.register",
+      "permissionSystem": "require_perm",
+      "websocketIntegration": true,
+      "dockerOrchestration": true
+    }
+  },
+
+  "codeGenerationRules": {
+    "reuseExistingCode": {
+      "enabled": true,
+      "priority": "highest",
+      "patterns": [
+        "脚本注册装饰器",
+        "权限检查中间件",
+        "WebSocket处理器",
+        "API路由定义",
+        "配置加载逻辑"
+      ]
+    },
+    "consistencyCheck": {
+      "enabled": true,
+      "rules": [
+        "所有API端点使用require_perm",
+        "脚本使用@registry.register装饰器",
+        "配置按层次加载",
+        "错误响应格式统一"
+      ]
+    },
+    "projectSpecificOptimizations": {
+      "scriptDevelopment": {
+        "template": "@registry.register(\"script_name\")\ndef script_name():\n    # Implementation\n    pass",
+        "validation": "检查注册装饰器和唯一名称"
+      },
+      "apiDevelopment": {
+        "template": "@router.post(\"/endpoint\")\nasync def endpoint(data: dict, user=Depends(require_perm(\"module:action\"))):\n    # Implementation\n    pass",
+        "validation": "检查权限装饰器和路由定义"
+      },
+      "websocketHandlers": {
+        "pattern": "WebSocket连接管理器",
+        "validation": "检查连接生命周期和错误处理"
+      }
+    }
+  },
+
+  "contentOptimization": {
+    "workflow": [
+      "获取任务，先用中文复述项目架构和当前状态",
+      "识别涉及的模块：backend/frontend/scripts/config",
+      "检查配置层次一致性",
+      "执行修改，保持项目模式",
+      "验证API映射表同步"
+    ],
+    "fullScanPolicy": {
+      "recursive": true,
+      "includeHidden": true,
+      "sensitivePaths": [".env", "pia/credentials.example.txt"],
+      "performanceOptimization": {
+        "largeProjectThreshold": 10000,
+        "incrementalScan": true
+      }
+    },
+    "linkedOptimization": {
+      "optimizeRelatedConfigs": true,
+      "syncApiMappings": true,
+      "updateDocumentation": true,
+      "checkBidirectionalReferences": true
+    }
+  },
+
+  "integrationPoints": {
+    "backendFrontendSync": {
+      "functionRegistry": "YL-copilot-rules.json#/functionRegistry",
+      "apiContract": "frontend/pages/统一接口映射表.md",
+      "validation": "双向映射检查"
+    },
+    "deploymentOrchestration": {
+      "dockerCompose": "docker/docker-compose.yml",
+      "startupScript": "start.sh",
+      "healthChecks": "scripts/checks_apis*.py"
+    },
+    "aiIntegration": {
+      "bridge": "backend/ai_bridge.py",
+      "dockerService": "ai-docker/",
+      "modelLoading": "本地AI模型支持"
+    },
+    "monitoring": {
+      "websocket": "backend/ws/",
+      "taskManager": "backend/ws/task_manager.py",
+      "logs": "logs/"
+    }
+  },
+
+  "errorHandling": {
+    "projectSpecific": {
+      "apiErrors": "结构化错误响应",
+      "websocketErrors": "自动重连机制",
+      "scriptErrors": "注册系统异常处理",
+      "configErrors": "配置加载失败回退"
+    },
+    "validationRules": {
+      "scriptRegistration": "必须有唯一名称",
+      "permissionChecks": "所有端点需权限",
+      "configHierarchy": "按优先级加载",
+      "apiContracts": "前后端映射同步"
+    }
+  },
+
+  "testingAndValidation": {
+    "healthChecks": [
+      "scripts/checks_apis*.py",
+      "scripts/checks_pages*.sh",
+      "backend健康检查"
+    ],
+    "integrationTests": [
+      "API端点权限验证",
+      "WebSocket连接测试",
+      "脚本注册功能测试"
+    ],
+    "configValidation": {
+      "jsonSyntax": "python3 -m json.tool",
+      "schemaCheck": "配置结构验证",
+      "referenceCheck": "路径和映射验证"
+    }
+  },
+
+  "developmentWorkflow": {
+    "startupCommands": {
+      "fullStack": "./start.sh full",
+      "backendOnly": "./start.sh backend",
+      "frontendOnly": "./start.sh frontend"
+    },
+    "commonTasks": {
+      "addScript": "使用@registry.register装饰器",
+      "addApi": "添加require_perm权限检查",
+      "updateConfig": "同步YL-copilot-rules.json中的functionRegistry",
+      "testChanges": "运行健康检查脚本"
+    },
+    "codeReviewChecklist": [
+      "脚本是否注册",
+      "API是否有权限检查",
+      "配置是否同步",
+      "文档是否更新"
+    ]
+  },
+
+  "functionRegistry": {
+    "version": "1.0.0",
+    "description": "YLAI脚本注册表",
+    "functions": {
+      "demo_run": {
+        "name": "demo_run",
+        "description": "演示脚本",
+        "version": "1.0.0",
+        "module": "backend.scripts.demo_run",
+        "class": "DemoScript",
+        "timeout": 30,
+        "category": "general"
+      },
+      "phone_reverse": {
+        "name": "phone_reverse",
+        "description": "号码逆向分析脚本",
+        "version": "1.0.0",
+        "module": "backend.scripts.phone_reverse",
+        "class": "PhoneReverseScript",
+        "timeout": 30,
+        "category": "general"
+      },
+      "page_probe": {
+        "name": "page_probe",
+        "description": "页面探测脚本",
+        "version": "1.0.0",
+        "module": "backend.scripts.page_probe",
+        "class": "PageProbeScript",
+        "timeout": 30,
+        "category": "general"
+      },
+      "monitor": {
+        "name": "monitor",
+        "description": "系统监控脚本",
+        "version": "1.0.0",
+        "module": "backend.scripts.monitor",
+        "class": "MonitorScript",
+        "timeout": 30,
+        "category": "general"
+      },
+      "ai_task": {
+        "name": "ai_task",
+        "description": "AI任务处理脚本",
+        "version": "1.0.0",
+        "module": "backend.scripts.ai_task",
+        "class": "AITaskScript",
+        "timeout": 30,
+        "category": "ai"
+      },
+      "proxy_collector": {
+        "name": "proxy_collector",
+        "description": "代理收集器 - 从各种来源收集代理IP",
+        "version": "1.0.0",
+        "module": "backend.scripts.proxy_collector",
+        "class": "ProxyCollector",
+        "timeout": 300,
+        "category": "proxy"
+      },
+      "proxy_checker": {
+        "name": "proxy_checker",
+        "description": "代理检测器 - 检测代理可用性和性能",
+        "version": "1.0.0",
+        "module": "backend.scripts.proxy_checker",
+        "class": "ProxyChecker",
+        "timeout": 600,
+        "category": "proxy"
+      },
+      "proxy_manager": {
+        "name": "proxy_manager",
+        "description": "代理调度器 - 管理代理轮换和调度策略",
+        "version": "1.0.0",
+        "module": "backend.scripts.proxy_manager",
+        "class": "ProxyManager",
+        "timeout": 60,
+        "category": "proxy"
+      },
+      "proxy_integration": {
+        "name": "proxy_integration",
+        "description": "代理池集成器 - 将代理池与爬虫脚本集成",
+        "version": "1.0.0",
+        "module": "backend.scripts.proxy_integration",
+        "class": "ProxyPoolIntegration",
+        "timeout": 120,
+        "category": "proxy"
+      },
+      "risk_detector": {
+        "name": "risk_detector",
+        "description": "页面采集模块 - 实现页面源码获取和特征提取",
+        "version": "1.0.0",
+        "module": "backend.scripts.risk_detector",
+        "class": "PageCollector",
+        "timeout": 60,
+        "category": "risk"
+      },
+      "captcha_solver": {
+        "name": "captcha_solver",
+        "description": "验证码识别模块 - 支持多种验证码类型识别",
+        "version": "1.0.0",
+        "module": "backend.scripts.captcha_solver",
+        "class": "CaptchaSolver",
+        "timeout": 120,
+        "category": "risk"
+      },
+      "risk_analyzer": {
+        "name": "risk_analyzer",
+        "description": "风控类型分析器 - 识别和分类不同风控类型",
+        "version": "1.0.0",
+        "module": "backend.scripts.risk_analyzer",
+        "class": "RiskAnalyzer",
+        "timeout": 60,
+        "category": "risk"
+      },
+      "strategy_switcher": {
+        "name": "strategy_switcher",
+        "description": "策略切换器 - 根据风控检测结果动态调整策略",
+        "version": "1.0.0",
+        "module": "backend.scripts.strategy_switcher",
+        "class": "StrategySwitcher",
+        "timeout": 30,
+        "category": "risk"
+      }
+    }
+  },
+
+  "testOutput": [
+    {
+      "name": "test1",
+      "value": 100
+    },
+    {
+      "name": "test2",
+      "value": 200
+    }
+  ]
+}

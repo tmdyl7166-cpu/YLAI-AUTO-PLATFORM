@@ -1,0 +1,52 @@
+{
+  "installed": {
+    "data_source": {
+      "name": "数据源插件",
+      "version": "1.0.0",
+      "description": "提供多种数据源的统一接口和数据获取能力",
+      "author": "YLAI Team",
+      "path": "plugins/data_source",
+      "enabled": true,
+      "installed_at": "2025-12-21T00:00:00",
+      "capabilities": ["web", "api", "file"]
+    },
+    "output_processor": {
+      "name": "输出处理器插件",
+      "version": "1.0.0",
+      "description": "提供多种数据输出和处理能力",
+      "author": "YLAI Team",
+      "path": "plugins/output_processor",
+      "enabled": true,
+      "installed_at": "2025-12-21T00:00:00",
+      "capabilities": ["file", "api", "database"]
+    },
+    "data_handler": {
+      "name": "数据处理器插件",
+      "version": "1.0.0",
+      "description": "提供数据清洗、转换、分析和处理能力",
+      "author": "YLAI Team",
+      "path": "plugins/data_handler",
+      "enabled": true,
+      "installed_at": "2025-12-21T00:00:00",
+      "capabilities": ["filter", "transform", "aggregate", "validate"]
+    }
+  },
+  "available": {
+    "ai_processor": {
+      "name": "AI处理器插件",
+      "version": "1.0.0",
+      "description": "集成AI模型进行智能数据处理",
+      "author": "YLAI Team",
+      "download_url": "https://github.com/ylai/plugins/ai_processor",
+      "capabilities": ["nlp", "classification", "generation"]
+    },
+    "monitoring": {
+      "name": "监控插件",
+      "version": "1.0.0",
+      "description": "提供系统监控和性能分析能力",
+      "author": "YLAI Team",
+      "download_url": "https://github.com/ylai/plugins/monitoring",
+      "capabilities": ["metrics", "alerts", "dashboard"]
+    }
+  }
+}

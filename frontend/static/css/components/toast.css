@@ -1,0 +1,7 @@
+.yl-toast {
+  transition: opacity 0.3s;
+  font-family: system-ui, Arial, sans-serif;
+}
+.yl-toast-info { background: #2563eb; }
+.yl-toast-success { background: #42e695; }
+.yl-toast-error { background: #ff7b7b; }

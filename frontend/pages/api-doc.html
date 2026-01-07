@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API 文档 - YLAI-AUTO-PLATFORM</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { background: #f0f0f0; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .api-section { margin-bottom: 30px; border: 1px solid #ddd; padding: 20px; border-radius: 8px; }
+        .api-endpoint { background: #f9f9f9; padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .method { font-weight: bold; color: #007bff; }
+        .back-link { margin-top: 20px; }
+        .back-link a { color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>API 文档</h1>
+            <p>YLAI-AUTO-PLATFORM 系统API接口文档</p>
+        </div>
+
+        <div class="api-section">
+            <h2>健康检查</h2>
+            <div class="api-endpoint">
+                <span class="method">GET</span> /health<br>
+                <small>检查系统健康状态</small>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <h2>模块管理</h2>
+            <div class="api-endpoint">
+                <span class="method">GET</span> /api/modules<br>
+                <small>获取所有可用模块列表</small>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <h2>任务管理</h2>
+            <div class="api-endpoint">
+                <span class="method">POST</span> /api/tasks<br>
+                <small>创建新任务</small>
+            </div>
+            <div class="api-endpoint">
+                <span class="method">GET</span> /api/tasks/{id}<br>
+                <small>获取任务状态</small>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <h2>AI 功能</h2>
+            <div class="api-endpoint">
+                <span class="method">POST</span> /api/ai/train<br>
+                <small>启动AI训练任务</small>
+            </div>
+            <div class="api-endpoint">
+                <span class="method">POST</span> /api/ai/predict<br>
+                <small>执行AI预测</small>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="/pages/index.html">← 返回主页</a>
+        </div>
+    </div>
+</body>
+</html>

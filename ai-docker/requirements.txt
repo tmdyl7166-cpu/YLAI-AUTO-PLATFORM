@@ -1,0 +1,12 @@
+requests
+rich
+watchdog
+pytest
+flake8
+black
+mypy
+fastapi
+uvicorn
+types-requests
+PyYAML
+types-PyYAML

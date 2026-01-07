@@ -1,0 +1,30 @@
+{
+  "inherit_highest": true,
+  "targets": {
+    "frontend/static/js/modules": {
+      "allowed_ext": [".js", ".ts"],
+      "disallow_patterns": ["eval(", "new Function("]
+    },
+    "frontend/static/css/modules": {
+      "allowed_ext": [".css"],
+      "disallow_patterns": []
+    },
+    "backend/scripts": {
+      "allowed_ext": [".py"],
+      "disallow_patterns": ["exec(", "eval("]
+    }
+  },
+  "html_rules": {
+    "disallow_inline_script": true,
+    "disallow_inline_style": true,
+    "allowed_script_src_prefixes": ["/static/js/modules/", "/static/js/pages/", "/static/js/components/"]
+  },
+  "rbac_rules": {
+    "roles": ["admin", "user", "guest"],
+    "permissions": {
+      "run_task": ["admin", "user"],
+      "view_monitor": ["admin", "user", "guest"],
+      "manage_rbac": ["admin"]
+    }
+  }
+}

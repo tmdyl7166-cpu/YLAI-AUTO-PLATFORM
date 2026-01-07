@@ -1,0 +1,16 @@
+/* RBAC 页面样式拆分（暗色基础由 components/visibility.css 的 .page-dark 提供）*/
+
+#rbac-root table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#rbac-root th,
+#rbac-root td {
+  border: 1px solid #1f2937;
+  padding: 8px;
+}
+
+#rbac-root th {
+  background: #0f172a;
+}

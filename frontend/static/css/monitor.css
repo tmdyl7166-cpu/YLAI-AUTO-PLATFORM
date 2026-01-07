@@ -1,0 +1,29 @@
+/* 基本布局与卡片样式（与 main.css 相协调） */
+.container{display:grid;grid-template-columns: 1fr 1fr;gap:12px}
+.left-top,.right-top{background:#0a0f1e;border:1px solid #1de9b6;border-radius:8px;padding:10px}
+.card{background:#0a0f1e;border:1px solid rgba(29,240,255,0.25);border-radius:8px;padding:10px;color:#fff}
+.scrollable{overflow:auto}
+.module-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.btn{background:#1de9b6;color:#000;border:none;padding:5px 10px;border-radius:4px;cursor:pointer;transition:0.2s}
+.btn:hover{background:#14cfa0}
+pre{background:#0a0f1e;color:#0ff;padding:10px;border-radius:5px;}
+
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+  .card {
+    padding: 6px !important;
+    font-size: 15px !important;
+  }
+  .module-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+@media (max-width: 600px) {
+  .container, .card, .module-grid {
+    font-size: 13px !important;
+    padding: 4px !important;
+  }
+}

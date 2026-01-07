@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <title>AI 多模型推理平台</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root { --primary:#0078d7; --primary-dark:#005fa3; }
+    body { font-family: Arial, sans-serif; margin: 2em; background: #f7f7fa; }
+    .container { max-width: 880px; margin: auto; background: #fff; padding: 2em; border-radius: 8px; box-shadow: 0 2px 8px #ccc; }
+    h2 { margin-top: 0; display:flex; align-items:center; gap:.75em; }
+    .status-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+    .ok{background:#22c55e}.bad{background:#ef4444}
+    label { display: block; margin-top: 1em; }
+    input, select, textarea, button { width: 100%; margin-top: 0.5em; padding: 0.5em; border-radius: 6px; border: 1px solid #ddd; }
+    textarea { resize: vertical; }
+    button { background: var(--primary); color: #fff; border: none; cursor: pointer; margin-top: 1em; }
+    button:hover { background: var(--primary-dark); }
+    .row { display:flex; gap:1em; }
+    .row > * { flex:1; }
+    .result { margin-top: 1em; background: #0b1020; color:#e6e8ef; padding: 1em; border-radius: 6px; min-height: 120px; white-space: pre-wrap; }
+    .toolbar { display:flex; gap:.5em; justify-content:flex-end; margin-top:.5em; }
+    .history { margin-top: 1.5em; }
+    .bubble { background:#f3f4f6; border:1px solid #e5e7eb; border-radius:8px; padding:.75em; margin:.5em 0; }
+    .bubble.me { background:#e0f2fe; border-color:#bae6fd; }
+    .loading { display:none; align-items:center; gap:.5em; color:#555; }
+    .spinner { width:16px;height:16px;border:2px solid #ddd;border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite }
+    @keyframes spin { to { transform: rotate(360deg) } }
+    small.muted{color:#6b7280}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>AI 多模型推理平台 <span class="status-dot ok" id="status"></span></h2>
+    <form id="ai-form" onsubmit="return false;">
+      <label for="model">选择模型：</label>
+      <select id="model" name="model"></select>
+      <label for="prompt">输入问题或指令：</label>
+      <textarea id="prompt" name="prompt" rows="6" placeholder="Ctrl+Enter 快速发送" required></textarea>
+      <div class="row">
+        <div>
+          <label for="temperature">Temperature（采样温度）：</label>
+          <input type="number" id="temperature" name="temperature" min="0" max="2" step="0.01" value="0.7">
+        </div>
+        <div>
+          <label for="max_tokens">最大生成长度：</label>
+          <input type="number" id="max_tokens" name="max_tokens" min="1" max="4096" step="1" value="512">
+        </div>
+      </div>
+      <div class="row">
+        <button type="submit" onclick="runInference()">提交推理</button>
+        <button type="button" onclick="clearHistory()" style="background:#6b7280">清空会话</button>
+      </div>
+    </form>
+    <div class="loading" id="loading"><div class="spinner"></div><span>生成中，请稍候…</span></div>
+    <div class="toolbar">
+      <button type="button" onclick="copyResult()">复制结果</button>
+      <button type="button" onclick="retryLast()">重试</button>
+    </div>
+    <div class="result" id="result" placeholder="将在这里显示回复..."></div>
+    <div class="history" id="history">
+      <small class="muted">会话历史</small>
+      <div id="history-list"></div>
+    </div>
+    <div class="actions">
+      <button onclick="alert('训练功能待开发')">AI训练</button>
+      <button onclick="alert('学习部署功能待开发')">学习部署</button>
+      <button onclick="alert('功能联动待开发')">功能联动</button>
+    </div>
+
+    <!-- AI模型状态面板 -->
+    <div class="ai-status-panel" style="margin-top: 2em; padding: 1em; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+      <h3 style="margin-top: 0; color: #495057;">🤖 AI 多模型联动状态</h3>
+      <div id="ai-models-status" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1em; margin-top: 1em;">
+        <!-- 模型状态将在这里动态显示 -->
+      </div>
+      <div id="ai-linkage-info" style="margin-top: 1em; padding: 0.5em; background: #e9ecef; border-radius: 4px; font-size: 0.9em;">
+        <strong>模型功能分配：</strong><br>
+        📝 qwen3:8b - 中文内容理解与分析<br>
+        🧠 llama3.1:8b - 任务规划与指令理解<br>
+        🤔 deepseek-r1:8b - 复杂推理与决策制定<br>
+        🎨 gpt-oss:20b - 创意生成与文本优化
+      </div>
+    </div>
+  </div>
+  <script>
+    // 健康状态
+    async function checkHealth(){
+      const dot = document.getElementById('status');
+      try{
+        const r = await fetch('/health'); await r.json();
+        dot.classList.remove('bad'); dot.classList.add('ok');
+        document.title = 'AI 多模型推理平台 · 在线';
+      }catch{ dot.classList.remove('ok'); dot.classList.add('bad'); document.title = 'AI 多模型推理平台 · 离线'; }
+    }
+    setInterval(checkHealth, 8000); checkHealth();
+
+    // 动态获取模型列表
+    async function loadModels() {
+      try {
+        const resp = await fetch('/models');
+        const data = await resp.json();
+        if (data.status === 'success') {
+          const sel = document.getElementById('model');
+          sel.innerHTML = '';
+          const last = localStorage.getItem('model') || data.result[0];
+          data.result.forEach(m => {
+            const opt = document.createElement('option');
+            opt.value = m; opt.textContent = m;
+            if(m===last) opt.selected = true;
+            sel.appendChild(opt);
+          });
+        }
+      } catch (e) { console.error('模型列表获取失败', e); }
+    }
+    loadModels();
+
+    // 推理请求
+    async function runInference() {
+      const btns = document.querySelectorAll('button');
+      const model = document.getElementById('model').value;
+      const prompt = document.getElementById('prompt').value;
+      const temperature = parseFloat(document.getElementById('temperature').value);
+      const max_tokens = parseInt(document.getElementById('max_tokens').value);
+      if(!prompt.trim()) return;
+      localStorage.setItem('model', model);
+      document.getElementById('loading').style.display='flex';
+      btns.forEach(b=>b.disabled=true);
+      try {
+        const resp = await fetch('/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model, prompt, temperature, max_tokens })
+        });
+        const data = await resp.json();
+        if (data.status === 'success') {
+          document.getElementById('result').textContent = data.result;
+          pushHistory(prompt, data.result, model);
+        } else {
+          document.getElementById('result').textContent = '错误：' + data.result;
+        }
+      } catch (e) {
+        document.getElementById('result').textContent = '请求失败：' + e;
+      }
+      document.getElementById('loading').style.display='none';
+      btns.forEach(b=>b.disabled=false);
+      window._last = {model, prompt, temperature, max_tokens};
+    }
+
+    // 历史记录
+    function pushHistory(q, a, model){
+      const area = document.getElementById('history-list');
+      const me = document.createElement('div');
+      me.className='bubble me'; me.textContent = '我：'+q;
+      const bot = document.createElement('div');
+      bot.className='bubble'; bot.textContent = '['+model+'] '+a;
+      area.appendChild(me); area.appendChild(bot);
+      area.scrollTop = area.scrollHeight;
+    }
+
+    function clearHistory(){
+      document.getElementById('history-list').innerHTML='';
+      document.getElementById('result').textContent='';
+    }
+
+    // 复制结果
+    async function copyResult(){
+      const text = document.getElementById('result').textContent || '';
+      if(!text) return;
+      try{ await navigator.clipboard.writeText(text); alert('已复制到剪贴板'); }catch{ alert('复制失败'); }
+    }
+
+    // 重试最后一次
+    async function retryLast(){
+      if(window._last){
+        document.getElementById('prompt').value = window._last.prompt;
+        await runInference();
+      }
+    }
+
+    // Ctrl+Enter 快捷发送
+    document.getElementById('prompt').addEventListener('keydown', (e)=>{
+      if(e.ctrlKey && e.key === 'Enter'){ runInference(); }
+    });
+
+    // AI模型状态检查
+    async function checkAIStatus(){
+      try {
+        const resp = await fetch('/ai/status');
+        const data = await resp.json();
+        if (data.status === 'ok') {
+          updateAIModelsStatus(data.models, data.model_linkage);
+        } else {
+          console.error('AI状态获取失败:', data.msg);
+        }
+      } catch (e) {
+        console.error('AI状态检查失败:', e);
+      }
+    }
+
+    function updateAIModelsStatus(models, linkage) {
+      const container = document.getElementById('ai-models-status');
+      container.innerHTML = '';
+
+      const modelEmojis = {
+        'qwen3:8b': '📝',
+        'llama3.1:8b': '🧠',
+        'deepseek-r1:8b': '🤔',
+        'gpt-oss:20b': '🎨'
+      };
+
+      for (const [model, status] of Object.entries(models)) {
+        const modelCard = document.createElement('div');
+        modelCard.style.cssText = `
+          padding: 0.75em;
+          border: 1px solid #dee2e6;
+          border-radius: 6px;
+          background: white;
+          text-align: center;
+        `;
+
+        const emoji = modelEmojis[model] || '🤖';
+        const statusColor = status === 'online' ? '#28a745' : '#dc3545';
+        const statusText = status === 'online' ? '在线' : '离线';
+
+        modelCard.innerHTML = `
+          <div style="font-size: 1.5em; margin-bottom: 0.5em;">${emoji}</div>
+          <div style="font-weight: bold; margin-bottom: 0.25em;">${model}</div>
+          <div style="color: ${statusColor}; font-size: 0.9em;">${statusText}</div>
+          <div style="font-size: 0.8em; color: #6c757d; margin-top: 0.25em;">${linkage[model] || '待分配'}</div>
+        `;
+
+        container.appendChild(modelCard);
+      }
+    }
+
+    // 页面加载时检查AI状态
+    checkAIStatus();
+    // 每30秒检查一次AI状态
+    setInterval(checkAIStatus, 30000);
+  </script>
+</body>
+</html>
